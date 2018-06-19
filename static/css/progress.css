@@ -1,0 +1,18 @@
+#progressbar {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    width: 200px;
+    height: 100px;
+}
+
+#circle-passed #circle-failed #circle-skipped {
+    margin: 20px;
+    width: 200px;
+    height: 200px;
+    position: relative;
+}
+
+p.lead {
+    font-size: 1.5rem;
+}

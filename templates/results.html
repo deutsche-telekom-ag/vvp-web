@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %} VVP {% endblock %}
+{% block titlebar_title %}{% endblock %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="/static/css/progress.css" />
+    <script src="/static/js/progressbar.min.js"></script>
+    <script src="/static/js/results.js"></script>
+
+{% endblock %}
+{% block body %}
+    <div class="site-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <h1 class="display-4">VNF Validation Project</h1>
+        <p class="lead">Please upload a zip file of your HEAT Templates (.yaml and .env) files below and click "Submit"
+            to test their interoperability with the ONAP project.</p>
+    </div>
+    <div class="container w-50">
+        <div class="card-deck mb-3 text-center">
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">Passed</h4>
+                </div>
+                <div class="card-body">
+                    <div id="circle-passed"></div>
+                </div>
+            </div>
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">Skipped</h4>
+                </div>
+                <div class="card-body">
+                    <div id="circle-skipped"></div>
+                </div>
+            </div>
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">Failed</h4>
+                </div>
+                <div class="card-body">
+                    <div id="circle-failed"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input id="val-pass" type="hidden" value="{{ result['pass'] }}" />
+    <input id="val-skip" type="hidden" value="{{ result['skip'] }}" />
+    <input id="val-fail" type="hidden" value="{{ result['fail'] }}" />
+    <input id="val-total" type="hidden" value="{{ result['total'] }}" />
+{% endblock %}

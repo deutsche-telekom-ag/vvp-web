@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 {% block title %} VVP {% endblock %}
 {% block body %}
-    An error occured: {{ error }}
+    <div class="site-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <img src="/static/images/error_graphical.svg" alt="Error" width="30%" height="30%" />
+        <p class="lead" style="margin-top: 10px;">An error occurred while processing your request. You can find additional information below.</p>
+        <br><br>
+        <pre><code>{{ error }}</code></pre>
+    </div>
 {% endblock %}

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
+  <defs>
+    <style>
+      .a {
+        fill: none;
+      }
+
+      .b {
+        fill: url(#a);
+      }
+
+      .c {
+        fill: #fff;
+        opacity: 0.9;
+        isolation: isolate;
+      }
+    </style>
+    <linearGradient id="a" x1="32" y1="3.91" x2="32" y2="59.91" gradientTransform="matrix(1, 0, 0, -1, 0, 63.91)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#d52b1e"/>
+      <stop offset="1" stop-color="#f05c51"/>
+    </linearGradient>
+  </defs>
+  <title>error_graphical</title>
+  <rect class="a" width="64" height="64"/>
+  <g>
+    <path class="b" d="M32,4A28,28,0,1,0,60,32,28,28,0,0,0,32,4Z"/>
+    <path class="c" d="M34.12,32,45.06,21a1.5,1.5,0,1,0-2.12-2.12L32,29.85,21.06,18.91A1.5,1.5,0,1,0,18.94,21L29.88,32,18.94,42.91A1.5,1.5,0,0,0,21.06,45L32,34.09,42.94,45a1.5,1.5,0,0,0,2.12-2.12Z"/>
+  </g>
+</svg>

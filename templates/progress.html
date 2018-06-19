@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %} VVP {% endblock %}
+{% block titlebar_title %}{% endblock %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="/static/css/progress.css" />
+    <script src="/static/js/progressbar.min.js"></script>
+    <script src="/static/js/poll_progress.js"></script>
+{% endblock %}
+{% block body %}
+    <div class="site-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <h1 class="display-4">VNF Validation Project</h1>
+    </div>
+    <div class="container w-50">
+        <div class="card-deck text-center">
+            <div class="card box-shadow">
+                <div class="card-body center-block">
+                    <div id="progressbar"></div>
+                    <p class="lead" id="message">Waiting for server..</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input id="uid" type="hidden" value="{{uid}}" />
+{% endblock %}

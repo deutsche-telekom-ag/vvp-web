@@ -1,17 +1,17 @@
+# -*- coding: utf8 -*-
+
 from sanic import Sanic, exceptions, response
 from jinja2 import Environment, PackageLoader
-import redis
-import uuid
-import os.path
+import redis, os, uuid, json, asyncio
+from test_runner import test_runner
 
 app = Sanic(__name__)
-env = Environment(loader=PackageLoader('app', 'templates'),
-                  trim_blocks=True)
-redis = redis.StrictRedis(host='localhost', port=6379, db=0)
+env = Environment(loader=PackageLoader('app', 'templates'), trim_blocks=True)
+redis = redis.StrictRedis(host='localhost', port=6379, db=0, decode_responses=True)
+
 
 upload_dir = "./uploads"
 app.static('/static', './static')
-
 
 @app.route('/')
 async def index(request):
@@ -22,8 +22,6 @@ async def index(request):
 
 @app.route("/upload", methods=['POST'])
 async def upload_file(request):
-    from sanic import response
-    import os
     if not os.path.exists(upload_dir):
         os.makedirs(upload_dir)
 
@@ -32,20 +30,64 @@ async def upload_file(request):
         return response.json(False, 400)
 
     unique_id = str(uuid.uuid4())
-    path = upload_dir + "/" + request.files["file"][0].name + unique_id
+    path = upload_dir + "/" + unique_id + "_" + request.files["file"][0].name
     f = open(path, "wb")
     f.write(request.files["file"][0].body)
     f.close()
 
     redis.set("ul_" + unique_id, path)
     print("Stored file '" + path + "' as: " + unique_id)
-    return response.json({'imageUrl': '/static/images/zip-file_graphical.svg'})
+    return response.json({'image_url': '/static/images/zip-file_graphical.svg',
+                          'uid': unique_id})
 
+@app.route("/next/<uid>", methods=['GET', 'POST'])
+async def process_heat(request, uid):
+    path = redis.get("ul_" + uid)
+    if path:
+        path = os.path.abspath(path)
+        print(path)
+        redis.set("status_" + uid, json.dumps({'message': "Starting test run..", 'progress': 1, 'state': "running"}))
+        asyncio.ensure_future(test_runner.run_tests(uid, redis, path))
+    else:
+        return response.html(env.get_template('error.html').render(error="Could not find uid."))
+    return response.html(env.get_template('progress.html').render(uid=uid))
 
-@app.exception(exceptions.NotFound)
-async def not_found(request, exception):
+@app.route("/status/<uid>", methods=['GET'])
+async def return_status(request, uid):
+    status = redis.get("status_" + uid)
+    print(status)
+    if not status:
+        return response.json(False, 500)
+    return response.json(json.loads(status))
+
+@app.route("/result/<uid>", methods=['GET', 'POST'])
+async def process_heat(request, uid):
+    res = redis.get("result_" + uid)
+    if not res:
+        return response.html(env.get_template('error.html').render(error="Could not find test results for uid."))
+    return response.html(env.get_template('results.html').render(result=json.loads(res)))
+
+@app.route("/delete/<uid>", methods=['POST'])
+async def upload_file(request, uid):
+    path = redis.get("ul_" + uid)
+    if not uid or not path:
+        print("Error: Could not get uid '"+uid+"' from Redis.")
+        return response.json(False, 400)
+    print("Deleting: '" + path + "' on user request.")
+    os.remove(path)
+    redis.delete("ul_" + uid)
+    return response.json(True)
+
+@app.route("/no_file_selected")
+async def no_file_selected(request):
+    template = env.get_template('error.html') #replace this with a nicer looking page later on
+    html = template.render(error="No file selected.")
+    return response.html(html)
+
+@app.exception(exceptions.SanicException)
+async def server_error(request, exception):
     template = env.get_template('error.html')
-    html = template.render(error=repr(exception))
+    html = template.render(error=str(exception))
     return response.html(html)
 
 
