@@ -11,17 +11,16 @@
 {% block body %}
     <div class="site-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
         <h1 class="display-4">VNF Validation Project</h1>
-        <p class="lead">Please upload a zip file of your HEAT Templates (.yaml and .env) files below and click "Submit"
-            to test their interoperability with the ONAP project.</p>
+        <p class="lead">The validation completed successfully. Please check out the results below.</p>
     </div>
-    <div class="container w-50">
+    <div class="container">
         <div class="card-deck mb-3 text-center">
             <div class="card mb-4 box-shadow">
                 <div class="card-header">
                     <h4 class="my-0 font-weight-normal">Passed</h4>
                 </div>
                 <div class="card-body">
-                    <div id="circle-passed"></div>
+                    <div id="circle-passed" class="cprogress"></div>
                 </div>
             </div>
             <div class="card mb-4 box-shadow">
@@ -29,7 +28,7 @@
                     <h4 class="my-0 font-weight-normal">Skipped</h4>
                 </div>
                 <div class="card-body">
-                    <div id="circle-skipped"></div>
+                    <div id="circle-skipped" class="cprogress"></div>
                 </div>
             </div>
             <div class="card mb-4 box-shadow">
@@ -37,7 +36,15 @@
                     <h4 class="my-0 font-weight-normal">Failed</h4>
                 </div>
                 <div class="card-body">
-                    <div id="circle-failed"></div>
+                    <div id="circle-failed" class="cprogress"></div>
+                </div>
+            </div>
+            <div class="card mb-1 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal" >Summary</h4>
+                </div>
+                <div class="card-body" >
+                    blah blah
                 </div>
             </div>
         </div>

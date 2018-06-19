@@ -6,12 +6,13 @@
     height: 100px;
 }
 
-#circle-passed #circle-failed #circle-skipped {
+.cprogress {
     margin: auto;
     width: 200px;
     height: 200px;
     position: relative;
 }
+
 
 p.lead {
     font-size: 1.5rem;
