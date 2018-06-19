@@ -32,7 +32,7 @@ $(document).ready(function () {
 
     bar1.animate(1.0);  // Number from 0.0 to 1.0
 
-    var bar2 = new ProgressBar.Circle("#circle-passed", {
+    var bar2 = new ProgressBar.Circle("#circle-skipped", {
         color: '#fffff',
         strokeWidth: 4,
         trailWidth: 1,
@@ -47,7 +47,7 @@ $(document).ready(function () {
             circle.path.setAttribute('stroke', state.color);
             circle.path.setAttribute('stroke-width', state.width);
 
-            var value = Math.round(circle.value() * pass);
+            var value = Math.round(circle.value() * skip);
             if (value === 0) {
                 circle.setText('');
             } else {
@@ -76,7 +76,7 @@ $(document).ready(function () {
             circle.path.setAttribute('stroke', state.color);
             circle.path.setAttribute('stroke-width', state.width);
 
-            var value = Math.round(circle.value() * pass);
+            var value = Math.round(circle.value() * fail);
             if (value === 0) {
                 circle.setText('');
             } else {
