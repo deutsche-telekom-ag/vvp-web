@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64"
+     viewBox="0 0 64 64">
+    <defs>
+        <style>
+            .a {
+            fill: none;
+            }
+
+            .b {
+            fill: url(#a);
+            }
+
+            .c {
+            fill: #b4b4b4;
+            }
+
+            .d {
+            fill: #66676a;
+            }
+
+            .e {
+            fill: url(#b);
+            }
+        </style>
+        <linearGradient id="a" x1="7.06" y1="2266.33" x2="7.06" y2="2211.07"
+                        gradientTransform="translate(24.94 -2207.1)" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ddd6d3"/>
+            <stop offset="0.39" stop-color="#e9e4e2"/>
+            <stop offset="1" stop-color="#e9e4e2"/>
+        </linearGradient>
+        <linearGradient id="b" x1="32" y1="37.91" x2="32" y2="61.91" gradientTransform="matrix(1, 0, 0, -1, 0, 63.91)"
+                        gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#808083"/>
+            <stop offset="1" stop-color="#a6a6ae"/>
+        </linearGradient>
+    </defs>
+    <title>zip-file_graphical</title>
+    <rect class="a" width="64" height="64"/>
+    <g>
+        <path class="b" d="M55,58a2,2,0,0,1-2,2H11a2,2,0,0,1-2-2V6a2,2,0,0,1,2-2H53a2,2,0,0,1,2,2Z"/>
+        <polygon class="c"
+                 points="32 48 32 46 37 46 37 40 32 40 32 38 37 38 37 32 32 32 32 30 37 30 37 26 27 26 27 34 32 34 32 36 27 36 27 42 32 42 32 44 27 44 27 50 32 50 32 52 27 52 27 55 37 55 37 48 32 48"/>
+        <rect class="d" x="27" y="26" width="10" height="2"/>
+        <path class="e" d="M32,2a5,5,0,0,0-5,5V26H37V7A5,5,0,0,0,32,2Zm2,21H30V18h4Z"/>
+        <rect class="d" x="30" y="16" width="4" height="2"/>
+    </g>
+</svg>
