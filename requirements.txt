@@ -1,0 +1,5 @@
+redis==2.10.6
+sanic==0.7.0
+Jinja2==2.8
+pytest==3.6.1
+PyYAML==3.12

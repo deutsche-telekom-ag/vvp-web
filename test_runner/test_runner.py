@@ -1,4 +1,4 @@
-# -*- coding: utf8 -*-
+# coding=utf-8
 import json, os, zipfile, asyncio, pytest, shutil, threading
 base_dir = "tests/test"
 

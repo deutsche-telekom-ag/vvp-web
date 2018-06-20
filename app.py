@@ -1,4 +1,4 @@
-# -*- coding: utf8 -*-
+# coding=utf-8
 
 from sanic import Sanic, exceptions, response
 from jinja2 import Environment, PackageLoader
@@ -92,4 +92,4 @@ async def server_error(request, exception):
 
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=8000)
+    app.run(host='0.0.0.0', port=8913, workers=2)

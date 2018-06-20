@@ -50,6 +50,10 @@ function doPoll() {
                 if(response.data.state !== "done")
                 {
                     setTimeout(doPoll, 500);
+                } else {
+                    setTimeout(function () {
+                        window.location = '/result/' + poll_uid;
+                    }, 2000);
                 }
             }
 
