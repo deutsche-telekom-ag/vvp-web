@@ -6,6 +6,7 @@ services:
 before_script:
   - docker info
   - apk --no-cache add git
+  - git submodule sync --recursive
   - git submodule update --recursive --remote
 
 
