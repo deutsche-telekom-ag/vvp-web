@@ -5,6 +5,9 @@ services:
 
 before_script:
   - docker info
+  - apk --no-cache add git
+  - git submodule update --recursive --remote
+
 
 build_image:
   script:
