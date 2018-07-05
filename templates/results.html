@@ -3,7 +3,7 @@
 {% block titlebar_title %}{% endblock %}
 {% block head %}
     {{ super() }}
-    <link rel="stylesheet" href="/static/css/progress.css" />
+    <link rel="stylesheet" href="/static/css/progress.css"/>
     <script src="/static/js/progressbar.min.js"></script>
     <script src="/static/js/results.js"></script>
 
@@ -41,16 +41,35 @@
             </div>
             <div class="card mb-1 box-shadow">
                 <div class="card-header">
-                    <h4 class="my-0 font-weight-normal" >Summary</h4>
+                    <h4 class="my-0 font-weight-normal">Summary</h4>
                 </div>
-                <div class="card-body" >
-                    - more info here soon -
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Result</th>
+                            <th scope="col">Test</th>
+                            <th scope="col">Duration</th>
+                            <th scope="col">Log</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in items %}
+                            <TR>
+                                <TD>{{ items[item]["result"] }}</TD>
+                                <TD>{{ items[item]["name"] }}</TD>
+                                <TD>{{ items[item]["duration"] }}</TD>
+                                <TD>{{ items[item]["log"] }}</TD>
+                            </TR>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-    <input id="val-pass" type="hidden" value="{{ result['pass'] }}" />
-    <input id="val-skip" type="hidden" value="{{ result['skip'] }}" />
-    <input id="val-fail" type="hidden" value="{{ result['fail'] }}" />
-    <input id="val-total" type="hidden" value="{{ result['total'] }}" />
+    <input id="val-pass" type="hidden" value="{{ result['pass'] }}"/>
+    <input id="val-skip" type="hidden" value="{{ result['skip'] }}"/>
+    <input id="val-fail" type="hidden" value="{{ result['fail'] }}"/>
+    <input id="val-total" type="hidden" value="{{ result['total'] }}"/>
 {% endblock %}

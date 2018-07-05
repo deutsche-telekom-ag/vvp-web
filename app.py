@@ -63,9 +63,11 @@ async def return_status(request, uid):
 @app.route("/result/<uid>", methods=['GET', 'POST'])
 async def process_heat(request, uid):
     res = redis.get("results_" + uid)
+    tests = redis.get("results_" + uid + "_tests")
     if not res:
         return response.html(env.get_template('error.html').render(error="Could not find test results for uid."))
-    return response.html(env.get_template('results.html').render(result=json.loads(res)))
+    items = json.loads(tests)
+    return response.html(env.get_template('results.html').render(result=json.loads(res), items=json.loads(tests)))
 
 @app.route("/delete/<uid>", methods=['POST'])
 async def upload_file(request, uid):

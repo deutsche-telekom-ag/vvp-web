@@ -10,6 +10,7 @@ class ProgressPlugin:
         self.outcome = {'pass': 0, 'skip': 0, 'fail': 0, 'total': 0}
         self.total = 0
         self.collected = 0
+        self.tests = {}
 
     def calc_status(self):
         stat = int(round((1.0*self.ran)/(1.0*self.total) * 50))
@@ -28,22 +29,29 @@ class ProgressPlugin:
     def pytest_runtest_logreport(self, report):
 
         self.redis.set("status_" + self.uid, json.dumps({'message': "Running tests.. (" +str(self.ran)+"/" + str(self.total) + ")",
-                                                         'progress': 40+self.calc_status()}))
+                                                         'progress': 50 + self.calc_status()}))
         if report.passed and report.when == "call":
             self.outcome['pass'] += 1
             self.ran += 1
+            self.tests[self.ran - 1] = {'name': os.path.basename(report.fspath), 'log': report.longreprtext,
+                                        'result': report.outcome, 'duration': getattr(report, 'duration', 0.0)}
         elif report.failed:
             self.outcome['fail'] += 1
             self.ran += 1
+            self.tests[self.ran - 1] = {'name': os.path.basename(report.fspath), 'log': report.longreprtext,
+                                        'result': report.outcome, 'duration': getattr(report, 'duration', 0.0)}
         elif report.skipped:
             self.outcome['skip'] += 1
             self.ran += 1
+            self.tests[self.ran - 1] = {'name': os.path.basename(report.fspath), 'log': report.longreprtext,
+                                        'result': report.outcome, 'duration': getattr(report, 'duration', 0.0)}
 
     def pytest_sessionfinish(self, session, exitstatus):
         self.redis.set("status_" + self.uid, json.dumps({'message': "Done!",
                                    'progress': 100, 'state': 'done'}))
         self.outcome['total'] = self.total
         self.redis.set("results_" + self.uid, json.dumps(self.outcome))
+        self.redis.set("results_" + self.uid + "_tests", json.dumps(self.tests))
 
 def set_status(redis, uid, message="", progress=0, state="running"):
     redis.set("status_" + uid, json.dumps({'message': message,

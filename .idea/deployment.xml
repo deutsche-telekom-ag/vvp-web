@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="sftp://nacho@localhost:22/usr/bin/python3" autoUploadExternalChanges="true">
+  <component name="PublishConfigData" autoUpload="Always" serverName="localhost" autoUploadExternalChanges="true">
     <serverData>
-      <paths name="mesa.justflo.win">
+      <paths name="localhost">
         <serverdata>
           <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="sftp://nacho@localhost:22/usr/bin/python3">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/tmp/pycharm_project_vvp_test" local="$PROJECT_DIR$" web="localhost:8000/" />
+            <mapping deploy="/tmp/pycharm_project_304" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>
