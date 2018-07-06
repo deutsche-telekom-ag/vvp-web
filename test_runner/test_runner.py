@@ -34,17 +34,20 @@ class ProgressPlugin:
             self.outcome['pass'] += 1
             self.ran += 1
             self.tests[self.ran - 1] = {'name': os.path.basename(report.fspath), 'log': report.longreprtext,
-                                        'result': report.outcome, 'duration': getattr(report, 'duration', 0.0)}
+                                        'result': report.outcome,
+                                        'duration': round(getattr(report, 'duration', 0.0), 3)}
         elif report.failed:
             self.outcome['fail'] += 1
             self.ran += 1
             self.tests[self.ran - 1] = {'name': os.path.basename(report.fspath), 'log': report.longreprtext,
-                                        'result': report.outcome, 'duration': getattr(report, 'duration', 0.0)}
+                                        'result': report.outcome,
+                                        'duration': round(getattr(report, 'duration', 0.0), 3)}
         elif report.skipped:
             self.outcome['skip'] += 1
             self.ran += 1
             self.tests[self.ran - 1] = {'name': os.path.basename(report.fspath), 'log': report.longreprtext,
-                                        'result': report.outcome, 'duration': getattr(report, 'duration', 0.0)}
+                                        'result': report.outcome,
+                                        'duration': round(getattr(report, 'duration', 0.0), 3)}
 
     def pytest_sessionfinish(self, session, exitstatus):
         self.redis.set("status_" + self.uid, json.dumps({'message': "Done!",
