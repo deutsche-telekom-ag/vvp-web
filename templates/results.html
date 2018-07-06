@@ -43,7 +43,7 @@
                 <div class="card-header">
                     <h4 class="my-0 font-weight-normal">Summary</h4>
                 </div>
-                <div class="card-body">
+                <div class="card-body table-responsive">
                     <table class="table table-hover text-left">
                         <thead>
                         <tr>
@@ -69,6 +69,7 @@
                                 <TD>{{ items[indx]["duration"] }}s</TD>
                             <tr class="collapse" id="collapse-id{{ indx }}">
                                 <td colspan="3">
+                                    <div class="container">
                                     {% if items[indx]["log"] %}
                                         <!--<div class="collapse" id="collapse-id{{ indx }}">-->
                                         <div class="card card-body text-left text-small" style="max-width: 100%;">
@@ -77,6 +78,7 @@
                                         </div>
                                         <!--</div>-->
                                     {% endif %}
+                                    </div>
                                 </td>
                             </tr>
                             </TR>
