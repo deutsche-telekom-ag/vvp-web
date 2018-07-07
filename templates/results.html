@@ -48,6 +48,7 @@
                     <table class="table table-hover text-left">
                         <thead>
                         <tr>
+                            <th scope="col"></th>
                             <th scope="col">Result</th>
                             <th scope="col">Test</th>
                             <th scope="col">Duration</th>
@@ -56,8 +57,14 @@
                         </thead>
                         <tbody>
                         {% for indx in items %}
-                            <TR {% if items[indx]["log"] %}class="clickable" data-toggle="collapse"
-                                href="#collapse-id{{ indx }}"{% endif %}>
+                            <TR>
+                                <td class="text-center">
+                                    {% if items[indx]["result"] != "passed" %}
+                                        <a data-toggle="collapse" href="#collapse-id{{ indx }}">
+                                            <i class="icon icon-solid icon-add clickable" aria-hidden="true"></i>
+                                        </a>
+                                    {% endif %}
+                                </td>
                                 <TD class="text-center">{% if items[indx]["result"] == "passed" %}
                                     <i class="icon icon-solid icon-confirm text-success" aria-hidden="true"></i>
                                 {% elif items[indx]["result"] == "failed" %}
@@ -69,20 +76,22 @@
                                 <TD>{{ items[indx]["name"] }}</TD>
                                 <TD>{{ items[indx]["duration"] }}s</TD>
                             </TR>
-                            <tr class="collapse" data-parent="#collapse-id{{ indx }}" id="collapse-id{{ indx }}">
-                                <td colspan="3">
-                                    <div class="container">
+
+                            <tr>
+                                <td colspan="4">
+                                    <div class="container collapse" data-parent="#collapse-id{{ indx }}"
+                                         id="collapse-id{{ indx }}">
                                         {% if items[indx]["log"] %}
                                             <!--<div class="collapse" id="collapse-id{{ indx }}">-->
                                             <div class="card card-body text-left text-small" style="max-width: 100%;">
-                                            <pre><code class="language-python"
-                                                       data-lang="python">{{ items[indx]["log"] }}</code></pre>
+                                                <pre>{{ items[indx]["log"] }}</pre>
                                             </div>
                                             <!--</div>-->
                                         {% endif %}
                                     </div>
                                 </td>
                             </tr>
+
                         {% endfor %}
                         </tbody>
                     </table>
