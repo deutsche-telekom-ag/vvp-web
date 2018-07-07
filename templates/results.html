@@ -76,19 +76,19 @@
                                     <TD>{{ items[indx]["name"] }}</TD>
                                     <TD>{{ items[indx]["duration"] }}s</TD>
                                 </TR>
+                                {% if items[indx]["log"] %}
+                                    <tr>
+                                        <td colspan="4" style="word-break:break-all;">
+                                            <div class="container collapse" data-parent="#collapse-id{{ indx }}"
+                                                 id="collapse-id{{ indx }}">
 
-                                <tr>
-                                    <td colspan="4" style="word-break:break-all;">
-                                        <div class="container collapse" data-parent="#collapse-id{{ indx }}"
-                                             id="collapse-id{{ indx }}">
-                                            {% if items[indx]["log"] %}
                                                 <div class="card card-body container-fluid text-left text-small">
                                                     <pre style="width: 100%;">{{ items[indx]["log"] }}</pre>
                                                 </div>
-                                            {% endif %}
-                                        </div>
-                                    </td>
-                                </tr>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endif %}
                             {% endfor %}
                             </tbody>
                         </table>
