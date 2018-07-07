@@ -39,62 +39,59 @@
                     <div id="circle-failed" class="cprogress"></div>
                 </div>
             </div>
-            <div class="card mb-1 box-shadow">
+            <div class="card mb-1 box-shadow container">
                 <div class="card-header">
                     <h4 class="my-0 font-weight-normal">Summary</h4>
                 </div>
                 <div class="card-body table-responsive">
                     <div class="container">
-                    <table class="table table-hover text-left">
-                        <thead>
-                        <tr>
-                            <th scope="col"></th>
-                            <th scope="col">Result</th>
-                            <th scope="col">Test</th>
-                            <th scope="col">Duration</th>
-                            <!--<th scope="col">Log</th>-->
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for indx in items %}
-                            <TR>
-                                <td class="text-center">
-                                    {% if items[indx]["result"] != "passed" %}
-                                        <a data-toggle="collapse" href="#collapse-id{{ indx }}">
-                                            <i class="icon icon-solid icon-add clickable" aria-hidden="true"></i>
-                                        </a>
-                                    {% endif %}
-                                </td>
-                                <TD class="text-center">{% if items[indx]["result"] == "passed" %}
-                                    <i class="icon icon-solid icon-confirm text-success" aria-hidden="true"></i>
-                                {% elif items[indx]["result"] == "failed" %}
-                                    <i class="icon icon-solid icon-cancel text-danger" aria-hidden="true"></i>
-                                {% else %}
-                                    <i class="icon icon-solid icon-skip-to-end text-warning" aria-hidden="true"></i>
-                                {% endif %}
-                                </TD>
-                                <TD>{{ items[indx]["name"] }}</TD>
-                                <TD>{{ items[indx]["duration"] }}s</TD>
-                            </TR>
-
+                        <table class="table table-hover text-left" style="table-layout:fixed;width: 100%;">
+                            <thead>
                             <tr>
-                                <td colspan="4">
-                                    <div class="container collapse" data-parent="#collapse-id{{ indx }}"
-                                         id="collapse-id{{ indx }}">
-                                        {% if items[indx]["log"] %}
-                                            <!--<div class="collapse" id="collapse-id{{ indx }}">-->
-                                            <div class="card card-body text-left text-small" style="max-width: 100%;">
-                                                <pre>{{ items[indx]["log"] }}</pre>
-                                            </div>
-                                            <!--</div>-->
-                                        {% endif %}
-                                    </div>
-                                </td>
+                                <th scope="col" style="width: 10%;"></th>
+                                <th scope="col" style="width: 10%;">Result</th>
+                                <th scope="col" style="width: 65%;">Test</th>
+                                <th scope="col" style="width: 15%;">Duration</th>
+                                <!--<th scope="col">Log</th>-->
                             </tr>
+                            </thead>
+                            <tbody>
+                            {% for indx in items %}
+                                <TR>
+                                    <td class="text-center">
+                                        {% if items[indx]["result"] != "passed" %}
+                                            <a data-toggle="collapse" href="#collapse-id{{ indx }}">
+                                                <i class="icon icon-solid icon-add clickable" aria-hidden="true"></i>
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                    <TD class="text-center">{% if items[indx]["result"] == "passed" %}
+                                        <i class="icon icon-solid icon-confirm text-success" aria-hidden="true"></i>
+                                    {% elif items[indx]["result"] == "failed" %}
+                                        <i class="icon icon-solid icon-cancel text-danger" aria-hidden="true"></i>
+                                    {% else %}
+                                        <i class="icon icon-solid icon-skip-to-end text-warning" aria-hidden="true"></i>
+                                    {% endif %}
+                                    </TD>
+                                    <TD>{{ items[indx]["name"] }}</TD>
+                                    <TD>{{ items[indx]["duration"] }}s</TD>
+                                </TR>
 
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                                <tr>
+                                    <td colspan="4" style="word-break:break-all;">
+                                        <div class="container collapse" data-parent="#collapse-id{{ indx }}"
+                                             id="collapse-id{{ indx }}">
+                                            {% if items[indx]["log"] %}
+                                                <div class="card card-body container-fluid text-left text-small">
+                                                    <pre style="width: 100%;">{{ items[indx]["log"] }}</pre>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
