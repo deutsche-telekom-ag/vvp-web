@@ -45,7 +45,8 @@
                 </div>
                 <div class="card-body table-responsive">
                     <div class="container">
-                        <table class="table table-hover text-left" style="table-layout:fixed;width: 100%;">
+                        <table class="table table-hover text-left"
+                               style="table-layout:fixed;width: 100%;border-collapse: collapse;">
                             <thead>
                             <tr>
                                 <th scope="col" style="width: 10%;"></th>
@@ -57,7 +58,7 @@
                             </thead>
                             <tbody>
                             {% for indx in items %}
-                                <TR>
+                                <tr>
                                     <td class="text-center">
                                         {% if items[indx]["result"] != "passed" %}
                                             <a data-toggle="collapse" href="#collapse-id{{ indx }}">
@@ -65,25 +66,28 @@
                                             </a>
                                         {% endif %}
                                     </td>
-                                    <TD class="text-center">{% if items[indx]["result"] == "passed" %}
+                                    <td class="text-center">{% if items[indx]["result"] == "passed" %}
                                         <i class="icon icon-solid icon-confirm text-success" aria-hidden="true"></i>
                                     {% elif items[indx]["result"] == "failed" %}
                                         <i class="icon icon-solid icon-cancel text-danger" aria-hidden="true"></i>
                                     {% else %}
                                         <i class="icon icon-solid icon-skip-to-end text-warning" aria-hidden="true"></i>
                                     {% endif %}
-                                    </TD>
-                                    <TD>{{ items[indx]["name"] }}</TD>
-                                    <TD>{{ items[indx]["duration"] }}s</TD>
-                                </TR>
+                                    </td>
+                                    <td>{{ items[indx]["name"] }}</td>
+                                    <td>{{ items[indx]["duration"] }}s</td>
+                                </tr>
                                 {% if items[indx]["log"] %}
                                     <tr>
-                                        <td colspan="4" style="word-break:break-all;">
+                                        <td colspan="4" style="word-break:break-all; padding: 0px;">
                                             <div class="container collapse" data-parent="#collapse-id{{ indx }}"
                                                  id="collapse-id{{ indx }}">
 
                                                 <div class="card card-body container-fluid text-left text-small">
-                                                    <pre style="width: 100%;">{{ items[indx]["log"] }}</pre>
+                                                    <pre style="width: 100%;">
+                                                        <code class="language-python"
+                                                              data-lang="python">{{ items[indx]["log"] }}</code>
+                                                    </pre>
                                                 </div>
                                             </div>
                                         </td>
