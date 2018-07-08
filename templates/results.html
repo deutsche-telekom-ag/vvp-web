@@ -6,6 +6,22 @@
     <link rel="stylesheet" href="/static/css/progress.css"/>
     <script src="/static/js/progressbar.min.js"></script>
     <script src="/static/js/results.js"></script>
+    <script>
+        function filter_table(elem) {
+            var outcome_att = "value";
+            var outcome = elem.getAttribute(outcome_att);
+            var outcome_rows = document.getElementsByClassName(outcome);
+
+            for (var i = 0; i < outcome_rows.length; i++) {
+                outcome_rows[i].hidden = !elem.checked;
+            }
+
+            var rows = find_all('.results-table-row').filter(is_all_rows_hidden);
+            var all_rows_hidden = rows.length == 0 ? true : false;
+            var not_found_message = document.getElementById("not-found-message");
+            not_found_message.hidden = !all_rows_hidden;
+        }
+    </script>
 
 {% endblock %}
 {% block body %}
@@ -43,22 +59,40 @@
                 <div class="card-header">
                     <h4 class="my-0 font-weight-normal">Summary</h4>
                 </div>
-                <div class="card-body table-responsive">
-                    <div class="container">
+                <div class="card-body">
+                    <div class="row text-left">
+                        <div class="col form-check checkbox-slider--a">
+                            <label class="text-danger"><input type="checkbox" value="failed"
+                                                              onchange="filter_table(this)"
+                                                              checked="true"><span>Failed</span></label>
+                        </div>
+                        <div class="col form-check checkbox-slider--a">
+                            <label class="text-warning"><input
+                                    type="checkbox" value="skipped" onchange="filter_table(this)"
+                                    checked="true"><span>Skipped</span></label>
+                        </div>
+                        <div class="col form-check checkbox-slider--a">
+                            <label class="text-success"><input
+                                    type="checkbox" value="passed" onchange="filter_table(this)"
+                                    checked="true"><span>Passed</span></label>
+                        </div>
+                        <input class="col-sm-6 form-control" id="search_input" type="text" placeholder="Search..">
+                    </div>
+                    <div class="container table-responsive">
                         <table class="table table-hover text-left"
                                style="table-layout:fixed;width: 100%;border-collapse: collapse;">
                             <thead>
                             <tr>
-                                <th scope="col" style="width: 10%;"></th>
+                                <th scope="col" style="width: 3%;"></th>
                                 <th scope="col" style="width: 10%;">Result</th>
-                                <th scope="col" style="width: 65%;">Test</th>
+                                <th scope="col" style="width: 72%;">Test</th>
                                 <th scope="col" style="width: 15%;">Duration</th>
                                 <!--<th scope="col">Log</th>-->
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="tbody_results">
                             {% for indx in items %}
-                                <tr>
+                                <tr class="{{ items[indx]["result"] }}">
                                     <td class="text-center">
                                         {% if items[indx]["result"] != "passed" %}
                                             <a data-toggle="collapse" href="#collapse-id{{ indx }}">
@@ -78,11 +112,10 @@
                                     <td>{{ items[indx]["duration"] }}s</td>
                                 </tr>
                                 {% if items[indx]["log"] %}
-                                    <tr>
+                                    <tr class="{{ items[indx]["result"] }}" style="border: 0px;">
                                         <td colspan="4" style="word-break:break-all; padding: 0px;">
                                             <div class="container collapse" data-parent="#collapse-id{{ indx }}"
                                                  id="collapse-id{{ indx }}">
-
                                                 <div class="card card-body container-fluid text-left text-small">
                                                     <pre style="width: 100%;">
                                                         <code class="language-python"
@@ -105,4 +138,15 @@
     <input id="val-skip" type="hidden" value="{{ result['skip'] }}"/>
     <input id="val-fail" type="hidden" value="{{ result['fail'] }}"/>
     <input id="val-total" type="hidden" value="{{ result['total'] }}"/>
+
+    <script>
+        $(document).ready(function () {
+            $("#search_input").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#tbody_results tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
 {% endblock %}
