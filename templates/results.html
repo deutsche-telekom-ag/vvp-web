@@ -25,9 +25,9 @@
                 sibling = sibling.nextSibling;
             }
             var indx = sibling.id.replace(new RegExp('tr-', 'g'), '');
-            var width = sib.offsetWidth;
-            var code = document.getElementById("test-run-log" + indx);
-            code.style.width = (String)(width + "px");
+            //var width = sib.offsetWidth;
+            //var code = document.getElementById("test-run-log" + indx);
+            //code.style.width = (String)(width + "px");
             sibling.style.display = sibling.style.display == 'table-row' ? 'none' : 'table-row';
         }
     </script>
@@ -130,12 +130,12 @@
                                     <tr class="{{ items[indx]["result"] }} log" style="border: 0px;" id="tr-{{ indx }}">
                                         <td colspan="4" style="word-break:break-all; padding: 0px;">
                                             <div class="container" id="test-run-log{{ indx }}">
-                                                <div class="card card-body container-fluid text-left text-small">
-                                                    <pre style="width: 100%;">
+                                                <!--<div class="card card-body container-fluid text-left text-small">
+                                                    <pre style="width: 100%;">-->
                                                         <code class="language-python"
                                                               data-lang="python">{{ items[indx]["log"] }}</code>
-                                                    </pre>
-                                                </div>
+                                                <!--</pre>-->
+                                                <!--</div>-->
                                             </div>
                                         </td>
                                     </tr>
