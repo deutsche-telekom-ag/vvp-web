@@ -74,18 +74,6 @@
                         </div>
                         <input class="col-sm-6 form-control" id="search_input" type="text" placeholder="Search..">
                     </div>
-                    <div class="table container">
-                        <div class="table-row">
-                            <div class="table-head">Table Header</div>
-                            <div class="table-head">Table Header</div>
-                            <div class="table-head">Table Header</div>
-                        </div>
-                        <div class="table-row">
-                            <div class="table-cell">Table Cell</div>
-                            <div class="table-cell">Table Cell</div>
-                            <div class="table-cell">Table Cell</div>
-                        </div>
-                    </div>
                     <div class="container table-responsive">
                         <table class="table table-hover text-left"
                                style="table-layout:fixed;width: 100%;border-collapse: collapse;">
@@ -93,7 +81,7 @@
                             <tr>
                                 <th scope="col" style="width: 3%;"></th>
                                 <th scope="col" style="width: 10%;">Result</th>
-                                <th scope="col" style="width: 72%;">Test</th>
+                                <th scope="col" style="width: 72%;">Name</th>
                                 <th scope="col" style="width: 15%;">Duration</th>
                                 <!--<th scope="col">Log</th>-->
                             </tr>
@@ -116,8 +104,8 @@
                                         <i class="icon icon-solid icon-skip-to-end text-warning" aria-hidden="true"></i>
                                     {% endif %}
                                     </td>
-                                    <td>{{ items[indx]["name"] }}</td>
-                                    <td>{{ items[indx]["duration"] }}s</td>
+                                    <td style="word-break:break-all;">{{ items[indx]["name"] }}</td>
+                                    <td style="word-break:break-all;">{{ items[indx]["duration"] }}s</td>
                                 </tr>
                                 {% if items[indx]["log"] %}
                                     <tr class="{{ items[indx]["result"] }}" style="border: 0px;">

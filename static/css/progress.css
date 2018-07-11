@@ -17,23 +17,3 @@
 p.lead {
     font-size: 1.5rem;
 }
-
-.table {
-  display: table;
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.table-row {
-  display: table-row;
-}
-
-.table-cell, .table-head {
-  display: table-cell;
-  padding: 1em;
-  border: #f0f0f0 1px solid;
-}
-
-.table-head {
-  font-weight: bold;
-}
