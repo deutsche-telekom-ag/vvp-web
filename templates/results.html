@@ -52,84 +52,83 @@
             </div>
         </div>
         <div class="col card mb-1 box-shadow container">
-                <div class="card-header">
-                    <h4 class="my-0 font-weight-normal">Summary</h4>
-                </div>
-                <div class="card-body">
-                    <div class="row text-left" style="display: flex;
-  align-items: center;">
-                        <div class="col form-check checkbox-slider--b">
-                            <label class="text-danger"><input type="checkbox" value="failed"
-                                                              onchange="filter_table(this)"
-                                                              checked="true"><span>Failed</span></label>
-                        </div>
-                        <div class="col form-check checkbox-slider--b">
-                            <label class="text-warning"><input
-                                    type="checkbox" value="skipped" onchange="filter_table(this)"
-                                    checked="true"><span>Skipped</span></label>
-                        </div>
-                        <div class="col form-check checkbox-slider--b">
-                            <label class="text-success"><input
-                                    type="checkbox" value="passed" onchange="filter_table(this)"
-                                    checked="true"><span>Passed</span></label>
-                        </div>
-                        <input class="col-sm-6 form-control" id="search_input" type="text" placeholder="Search..">
+            <div class="card-header">
+                <h4 class="my-0 font-weight-normal">Summary</h4>
+            </div>
+            <div class="card-body">
+                <div class="row text-left" style="display: flex; align-items: center;">
+                    <div class="col form-check checkbox-slider--b">
+                        <label class="text-danger"><input type="checkbox" value="failed"
+                                                          onchange="filter_table(this)"
+                                                          checked="true"><span>Failed</span></label>
                     </div>
-                    <div class="container table-responsive">
-                        <table class="table table-hover text-left"
-                               style="table-layout:fixed;width: 100%;border-collapse: collapse;">
-                            <thead>
-                            <tr>
-                                <th scope="col" style="width: 3%;"></th>
-                                <th scope="col" style="width: 10%;">Result</th>
-                                <th scope="col" style="width: 72%;">Name</th>
-                                <th scope="col" style="width: 15%;">Duration</th>
-                                <!--<th scope="col">Log</th>-->
-                            </tr>
-                            </thead>
-                            <tbody id="tbody_results">
-                            {% for indx in items %}
-                                <tr class="{{ items[indx]["result"] }}">
-                                    <td class="text-center">
-                                        {% if items[indx]["result"] != "passed" %}
-                                            <a data-toggle="collapse" href="#collapse-id{{ indx }}">
-                                                <i class="icon icon-solid icon-add clickable" aria-hidden="true"></i>
-                                            </a>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-center">{% if items[indx]["result"] == "passed" %}
-                                        <i class="icon icon-solid icon-confirm text-success" aria-hidden="true"></i>
-                                    {% elif items[indx]["result"] == "failed" %}
-                                        <i class="icon icon-solid icon-cancel text-danger" aria-hidden="true"></i>
-                                    {% else %}
-                                        <i class="icon icon-solid icon-skip-to-end text-warning" aria-hidden="true"></i>
+                    <div class="col form-check checkbox-slider--b">
+                        <label class="text-warning"><input
+                                type="checkbox" value="skipped" onchange="filter_table(this)"
+                                checked="true"><span>Skipped</span></label>
+                    </div>
+                    <div class="col form-check checkbox-slider--b">
+                        <label class="text-success"><input
+                                type="checkbox" value="passed" onchange="filter_table(this)"
+                                checked="true"><span>Passed</span></label>
+                    </div>
+                    <input class="col-sm-6 form-control" id="search_input" type="text" placeholder="Search..">
+                </div>
+                <div class="container table-responsive">
+                    <table class="table table-hover text-left"
+                           style="table-layout:fixed;width: 100%;border-collapse: collapse;">
+                        <thead>
+                        <tr>
+                            <th scope="col" style="width: 3%;"></th>
+                            <th scope="col" style="width: 10%;">Result</th>
+                            <th scope="col" style="width: 72%;">Name</th>
+                            <th scope="col" style="width: 15%;">Duration</th>
+                            <!--<th scope="col">Log</th>-->
+                        </tr>
+                        </thead>
+                        <tbody id="tbody_results">
+                        {% for indx in items %}
+                            <tr class="{{ items[indx]["result"] }}">
+                                <td class="text-center">
+                                    {% if items[indx]["result"] != "passed" %}
+                                        <a data-toggle="collapse" href="#collapse-id{{ indx }}">
+                                            <i class="icon icon-solid icon-add clickable" aria-hidden="true"></i>
+                                        </a>
                                     {% endif %}
-                                    </td>
-                                    <td style="word-break:break-all;">{{ items[indx]["name"] }}</td>
-                                    <td style="word-break:break-all;">{{ items[indx]["duration"] }}s</td>
-                                </tr>
-                                {% if items[indx]["log"] %}
-                                    <tr class="{{ items[indx]["result"] }}" style="border: 0px;">
-                                        <td colspan="4" style="word-break:break-all; padding: 0px;">
-                                            <div class="container collapse" data-parent="#collapse-id{{ indx }}"
-                                                 id="collapse-id{{ indx }}">
-                                                <div class="card card-body container-fluid text-left text-small">
+                                </td>
+                                <td class="text-center">{% if items[indx]["result"] == "passed" %}
+                                    <i class="icon icon-solid icon-confirm text-success" aria-hidden="true"></i>
+                                {% elif items[indx]["result"] == "failed" %}
+                                    <i class="icon icon-solid icon-cancel text-danger" aria-hidden="true"></i>
+                                {% else %}
+                                    <i class="icon icon-solid icon-skip-to-end text-warning" aria-hidden="true"></i>
+                                {% endif %}
+                                </td>
+                                <td style="word-break:break-all;">{{ items[indx]["name"] }}</td>
+                                <td style="word-break:break-all;">{{ items[indx]["duration"] }}s</td>
+                            </tr>
+                            {% if items[indx]["log"] %}
+                                <tr class="{{ items[indx]["result"] }}" style="border: 0px;">
+                                    <td colspan="4" style="word-break:break-all; padding: 0px;">
+                                        <div class="container collapse" data-parent="#collapse-id{{ indx }}"
+                                             id="collapse-id{{ indx }}">
+                                            <div class="card card-body container-fluid text-left text-small">
                                                     <pre style="width: 100%;">
                                                         <code class="language-python"
                                                               data-lang="python">{{ items[indx]["log"] }}</code>
                                                     </pre>
-                                                </div>
                                             </div>
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
+    </div>
     </div>
     <input id="val-pass" type="hidden" value="{{ result['pass'] }}"/>
     <input id="val-skip" type="hidden" value="{{ result['skip'] }}"/>
