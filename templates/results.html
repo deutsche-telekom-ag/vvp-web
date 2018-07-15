@@ -92,58 +92,56 @@
                         </div>
                         <input class="col-sm-6 form-control" id="search_input" type="text" placeholder="Search..">
                     </div>
-                    <div class="container table-responsive">
-                        <table class="table table-hover text-left table-bordered"
-                               style="border-collapse: collapse;" id="table-summary">
-                            <thead>
-                            <tr>
-                                <th scope="col" style="width: 3%;"></th>
-                                <th scope="col" style="width: 10%;">Result</th>
-                                <th scope="col" style="width: 72%;">Name</th>
-                                <th scope="col" style="width: 15%;">Duration</th>
-                                <!--<th scope="col">Log</th>-->
-                            </tr>
-                            </thead>
-                            <tbody id="tbody_results">
-                            {% for indx in items %}
-                                <tr class="{{ items[indx]["result"] }}">
-                                    <td class="text-center">
-                                        {% if items[indx]["result"] != "passed" %}
-                                            <a data-toggle="collapse" href="#collapse-id{{ indx }}">
-                                                <i class="icon icon-solid icon-add clickable" aria-hidden="true"
-                                                   onclick="toggleSibling(this)"></i>
-                                            </a>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-center">{% if items[indx]["result"] == "passed" %}
-                                        <i class="icon icon-solid icon-confirm text-success" aria-hidden="true"></i>
-                                    {% elif items[indx]["result"] == "failed" %}
-                                        <i class="icon icon-solid icon-cancel text-danger" aria-hidden="true"></i>
-                                    {% else %}
-                                        <i class="icon icon-solid icon-skip-to-end text-warning" aria-hidden="true"></i>
+                    <table class="table table-hover text-left"
+                           style="border-collapse: collapse; table-layout: fixed;" id="table-summary">
+                        <thead>
+                        <tr>
+                            <th scope="col" style="width: 3%;"></th>
+                            <th scope="col" style="width: 10%;">Result</th>
+                            <th scope="col" style="width: 72%;">Name</th>
+                            <th scope="col" style="width: 15%;">Duration</th>
+                            <!--<th scope="col">Log</th>-->
+                        </tr>
+                        </thead>
+                        <tbody id="tbody_results">
+                        {% for indx in items %}
+                            <tr class="{{ items[indx]["result"] }}">
+                                <td class="text-center">
+                                    {% if items[indx]["result"] != "passed" %}
+                                        <a data-toggle="collapse" href="#collapse-id{{ indx }}">
+                                            <i class="icon icon-solid icon-add clickable" aria-hidden="true"
+                                               onclick="toggleSibling(this)"></i>
+                                        </a>
                                     {% endif %}
-                                    </td>
-                                    <td style="word-break:break-all;">{{ items[indx]["name"] }}</td>
-                                    <td style="word-break:break-all;">{{ items[indx]["duration"] }}s</td>
-                                </tr>
-                                {% if items[indx]["log"] %}
-                                    <tr class="{{ items[indx]["result"] }} log" style="border: 0px;" id="tr-{{ indx }}">
-                                        <td colspan="4" style="word-break:break-all; padding: 0px;">
-                                            <div class="container" id="test-run-log{{ indx }}">
-                                                <!--<div class="card card-body container-fluid text-left text-small">
-                                                    <pre style="width: 100%;">-->
+                                </td>
+                                <td class="text-center">{% if items[indx]["result"] == "passed" %}
+                                    <i class="icon icon-solid icon-confirm text-success" aria-hidden="true"></i>
+                                {% elif items[indx]["result"] == "failed" %}
+                                    <i class="icon icon-solid icon-cancel text-danger" aria-hidden="true"></i>
+                                {% else %}
+                                    <i class="icon icon-solid icon-skip-to-end text-warning" aria-hidden="true"></i>
+                                {% endif %}
+                                </td>
+                                <td style="word-break:break-all;">{{ items[indx]["name"] }}</td>
+                                <td style="word-break:break-all;">{{ items[indx]["duration"] }}s</td>
+                            </tr>
+                            {% if items[indx]["log"] %}
+                                <tr class="{{ items[indx]["result"] }} log" style="border: 0px;" id="tr-{{ indx }}">
+                                    <td colspan="4" style="word-break:break-all; padding: 0px;">
+                                        <div class="container" id="test-run-log{{ indx }}">
+                                            <!--<div class="card card-body container-fluid text-left text-small">-->
+                                            <pre>
                                                         <code class="language-python"
                                                               data-lang="python">{{ items[indx]["log"] }}</code>
-                                                <!--</pre>-->
-                                                <!--</div>-->
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                                                </pre>
+                                            <!--</div>-->
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
