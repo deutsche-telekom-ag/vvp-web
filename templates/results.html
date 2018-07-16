@@ -69,7 +69,7 @@
                     <div id="circle-failed" class="cprogress"></div>
                 </div>
             </div>
-            <div class="col card mb-1 box-shadow container">
+            <div class="card mb-1 box-shadow">
                 <div class="card-header">
                     <h4 class="my-0 font-weight-normal">Summary</h4>
                 </div>
@@ -129,12 +129,12 @@
                                 <tr class="{{ items[indx]["result"] }} log" style="border: 0px;" id="tr-{{ indx }}">
                                     <td colspan="4" style="word-break:break-all; padding: 0px;">
                                         <div class="container" id="test-run-log{{ indx }}">
-                                            <!--<div class="card card-body container-fluid text-left text-small">-->
+                                            <div class="card card-body container-fluid text-left text-small">-->
                                             <pre>
                                                         <code class="language-python"
                                                               data-lang="python">{{ items[indx]["log"] }}</code>
                                                 </pre>
-                                            <!--</div>-->
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
