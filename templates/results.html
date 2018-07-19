@@ -3,9 +3,39 @@
 {% block titlebar_title %}{% endblock %}
 {% block head %}
     {{ super() }}
-    <link rel="stylesheet" href="/static/css/progress.css" />
+    <link rel="stylesheet" href="/static/css/progress.css"/>
     <script src="/static/js/progressbar.min.js"></script>
     <script src="/static/js/results.js"></script>
+    <script>
+        function filter_table(elem) {
+            var outcome_att = "value";
+            var outcome = elem.getAttribute(outcome_att);
+            var outcome_rows = document.getElementsByClassName(outcome);
+
+            for (var i = 0; i < outcome_rows.length; i++) {
+                outcome_rows[i].hidden = !elem.checked;
+            }
+        }
+    </script>
+    <script>
+        function toggleSibling(sibling) {
+            var sib = sibling.parentNode.parentNode.parentNode;
+            sibling = sibling.parentNode.parentNode.parentNode.nextSibling;
+            while (!/tr/i.test(sibling.nodeName)) {
+                sibling = sibling.nextSibling;
+            }
+            var indx = sibling.id.replace(new RegExp('tr-', 'g'), '');
+            //var width = sib.offsetWidth;
+            //var code = document.getElementById("test-run-log" + indx);
+            //code.style.width = (String)(width + "px");
+            sibling.style.display = sibling.style.display == 'table-row' ? 'none' : 'table-row';
+        }
+    </script>
+    <style>
+        .log {
+            display: none;
+        }
+    </style>
 
 {% endblock %}
 {% block body %}
@@ -14,7 +44,7 @@
         <p class="lead">The validation completed successfully. Please check out the results below.</p>
     </div>
     <div class="container">
-        <div class="card-deck mb-3 text-center">
+        <div class="row-fluid card-deck mb-3 text-center">
             <div class="card mb-4 box-shadow">
                 <div class="card-header">
                     <h4 class="my-0 font-weight-normal">Passed</h4>
@@ -41,16 +71,94 @@
             </div>
             <div class="card mb-1 box-shadow">
                 <div class="card-header">
-                    <h4 class="my-0 font-weight-normal" >Summary</h4>
+                    <h4 class="my-0 font-weight-normal">Summary</h4>
                 </div>
-                <div class="card-body" >
-                    - more info here soon -
+                <div class="card-body">
+                    <div class="row text-left" style="display: flex; align-items: center;">
+                        <div class="col form-check checkbox-slider--b">
+                            <label class="text-danger"><input type="checkbox" value="failed"
+                                                              onchange="filter_table(this)"
+                                                              checked="true"><span>Failed</span></label>
+                        </div>
+                        <div class="col form-check checkbox-slider--b">
+                            <label class="text-warning"><input
+                                    type="checkbox" value="skipped" onchange="filter_table(this)"
+                                    checked="true"><span>Skipped</span></label>
+                        </div>
+                        <div class="col form-check checkbox-slider--b">
+                            <label class="text-success"><input
+                                    type="checkbox" value="passed" onchange="filter_table(this)"
+                                    checked="true"><span>Passed</span></label>
+                        </div>
+                        <input class="col-sm-6 form-control" id="search_input" type="text" placeholder="Search..">
+                    </div>
+                    <table class="table table-hover text-left"
+                           style="border-collapse: collapse; table-layout: fixed;" id="table-summary">
+                        <thead>
+                        <tr>
+                            <th scope="col" style="width: 3%;"></th>
+                            <th scope="col" style="width: 10%;">Result</th>
+                            <th scope="col" style="width: 72%;">Name</th>
+                            <th scope="col" style="width: 15%;">Duration</th>
+                            <!--<th scope="col">Log</th>-->
+                        </tr>
+                        </thead>
+                        <tbody id="tbody_results">
+                        {% for indx in items %}
+                            <tr class="{{ items[indx]["result"] }}">
+                                <td class="text-center">
+                                    {% if items[indx]["result"] != "passed" %}
+                                        <a data-toggle="collapse" href="#collapse-id{{ indx }}">
+                                            <i class="icon icon-solid icon-add clickable" aria-hidden="true"
+                                               onclick="toggleSibling(this)"></i>
+                                        </a>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">{% if items[indx]["result"] == "passed" %}
+                                    <i class="icon icon-solid icon-confirm text-success" aria-hidden="true"></i>
+                                {% elif items[indx]["result"] == "failed" %}
+                                    <i class="icon icon-solid icon-cancel text-danger" aria-hidden="true"></i>
+                                {% else %}
+                                    <i class="icon icon-solid icon-skip-to-end text-warning" aria-hidden="true"></i>
+                                {% endif %}
+                                </td>
+                                <td style="word-break:break-all;">{{ items[indx]["name"] }}</td>
+                                <td style="word-break:break-all;">{{ items[indx]["duration"] }}s</td>
+                            </tr>
+                            {% if items[indx]["log"] %}
+                                <tr class="{{ items[indx]["result"] }} log" style="border: 0px;" id="tr-{{ indx }}">
+                                    <td colspan="4" style="word-break:break-all; padding: 0px;">
+                                        <div class="container" id="test-run-log{{ indx }}">
+                                            <div class="card card-body container-fluid text-left text-small">-->
+                                            <pre>
+                                                        <code class="language-python"
+                                                              data-lang="python">{{ items[indx]["log"] }}</code>
+                                                </pre>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-    <input id="val-pass" type="hidden" value="{{ result['pass'] }}" />
-    <input id="val-skip" type="hidden" value="{{ result['skip'] }}" />
-    <input id="val-fail" type="hidden" value="{{ result['fail'] }}" />
-    <input id="val-total" type="hidden" value="{{ result['total'] }}" />
+    <input id="val-pass" type="hidden" value="{{ result['pass'] }}"/>
+    <input id="val-skip" type="hidden" value="{{ result['skip'] }}"/>
+    <input id="val-fail" type="hidden" value="{{ result['fail'] }}"/>
+    <input id="val-total" type="hidden" value="{{ result['total'] }}"/>
+
+    <script>
+        $(document).ready(function () {
+            $("#search_input").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#tbody_results tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
 {% endblock %}
