@@ -4,11 +4,12 @@ services:
   vvp-web:
     depends_on:
       - git-daemon
+      - ssh-daemon
     build: .
     restart: always
     networks:
       public:
-        ipv4_address: 10.10.0.3
+        ipv4_address: 10.10.0.2
       internal:
         ipv4_address: 10.11.0.4
     ports:
@@ -21,7 +22,16 @@ services:
       internal:
         ipv4_address: 10.11.0.3
     volumes:
-      - /var/git:/git
+      - git-data:/git
+
+  ssh-daemon:
+    build: ./container/ssh-daemon
+    restart: always
+    networks:
+      interal:
+        - ipv4_address: 10.11.0.4
+    volumes:
+      - git-data:/git
 
 networks:
   public:
@@ -40,3 +50,7 @@ networks:
     ipam:
       config:
         - subnet: 10.11.0.0/24
+
+volumes:
+  git-data:
+    driver: local
