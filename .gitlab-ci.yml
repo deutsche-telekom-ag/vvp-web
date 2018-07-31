@@ -30,7 +30,8 @@ deploy_staging:
     - mkdir -p ~/.ssh
     - eval $(ssh-agent -s)
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-    - ./ssh-add-pass <(echo "$STAGING_PRIVATE_KEY" | base64 -d) $STAGING_PRIVATE_KEY_PWD
+    - chmod +x ssh-add-pass.sh
+    - ./ssh-add-pass.sh <(echo "$STAGING_PRIVATE_KEY" | base64 -d) $STAGING_PRIVATE_KEY_PWD
     - apt-get install rsync
   script:
     - ssh -p22 $SSH_USER@$CI_ENVIRONMENT_URL "mkdir -p ~/vvp-web/tmp"
