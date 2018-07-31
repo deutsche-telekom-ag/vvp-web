@@ -1,19 +1,40 @@
-image: docker:latest
-
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
-services:
-  - docker:dind
-
-before_script:
-  - docker info
-  - apk update
-  - apk upgrade
-  - apk add python python-dev py-pip build-base
-  - pip install docker-compose
+stages:
+  - build
+  - deploy
 
 
 build_image:
+  image: docker:latest
+  stage: build
+  services:
+    - docker:dind
+  before_script:
+    - docker info
+    - apk update
+    - apk upgrade
+    - apk add python python-dev py-pip build-base
+    - pip install docker-compose
   script:
     - docker-compose build
+
+deploy_staging:
+  variables:
+    - SSH_USER: gitlab
+  stage: deploy
+  image: ubuntu/18.04
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - mkdir -p ~/.ssh
+    - eval $(ssh-agent -s)
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - ssh-add <(echo "$STAGING_PRIVATE_KEY")
+    - apt-get install rsync
+  script:
+    - ssh -p22 $SSH_USER@$CI_ENVIRONMENT_URL "mkdir -p ~/vvp-web/tmp"
+    - rsync -rav -e ssh --exclude='.git/' --exclude='.gitlab-ci.yml' --delete-excluded ./ $SSH_USER@$CI_ENVIRONMENT_URL:/vvp-web/tmp
+    - ssh -p22 $SSH_USER@$CI_ENVIRONMENT_URL "docker-compose -f ~/vvp-web/tmp/docker-compose.yml up -d --build"
+  only:
+    - master
