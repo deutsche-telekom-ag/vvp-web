@@ -28,7 +28,7 @@ services:
     build: ./container/ssh-daemon
     restart: always
     networks:
-      interal:
+      internal:
         - ipv4_address: 10.11.0.4
     volumes:
       - git-data:/git
