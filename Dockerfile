@@ -5,16 +5,16 @@
 FROM python:3.6.5-stretch
 RUN \
     apt-get update && \
-    apt-get install -y redis-server locales
+    apt-get install -y redis-server locales git
 
 ADD . /vvp-web
+
 RUN pip3 install --pre -r /vvp-web/requirements.txt
-RUN service redis-server start
-
 RUN locale-gen en_US.UTF-8
-
 RUN useradd -ms /bin/bash web
 RUN chown -hR web /vvp-web
+RUN git clone https://github.com/onap/vvp-validation-scripts /vvp-web/vvp-validation-scripts
+
 USER web
 
 EXPOSE 8913/tcp

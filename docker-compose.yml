@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  vvp-web:
+    depends_on:
+      - git-daemon
+    build: .
+    restart: always
+    networks:
+      public:
+        ipv4_address: 10.10.0.3
+      internal:
+        ipv4_address: 10.11.0.4
+    ports:
+      - "8913:8913"
+
+  git-daemon:
+    build: ./container/git-daemon
+    restart: always
+    networks:
+      internal:
+        ipv4_address: 10.11.0.3
+    volumes:
+      - /var/git:/git
+
+networks:
+  public:
+    # use the bridge driver, but enable IPv6
+    # subnet "10.10.0.0/24"
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "true"
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.10.0.0/24
+  internal:
+    # use bridge driver in subnet "10.11.0.0/24"
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.11.0.0/24
