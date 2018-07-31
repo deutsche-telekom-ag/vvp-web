@@ -22,7 +22,7 @@ build_image:
 
 deploy_staging:
   variables:
-    - SSH_USER: gitlab
+    SSH_USER: gitlab
   stage: deploy
   image: ubuntu/18.04
   before_script:
@@ -36,5 +36,3 @@ deploy_staging:
     - ssh -p22 $SSH_USER@$CI_ENVIRONMENT_URL "mkdir -p ~/vvp-web/tmp"
     - rsync -rav -e ssh --exclude='.git/' --exclude='.gitlab-ci.yml' --delete-excluded ./ $SSH_USER@$CI_ENVIRONMENT_URL:/vvp-web/tmp
     - ssh -p22 $SSH_USER@$CI_ENVIRONMENT_URL "docker-compose -f ~/vvp-web/tmp/docker-compose.yml up -d --build"
-  only:
-    - master
