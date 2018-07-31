@@ -24,7 +24,7 @@ deploy_staging:
   variables:
     SSH_USER: gitlab
   stage: deploy
-  image: ubuntu/18.04
+  image: ubuntu:18.04
   before_script:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - mkdir -p ~/.ssh
