@@ -33,7 +33,7 @@ deploy_staging:
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
     - chmod +x ssh-add-pass.sh
     - ./ssh-add-pass.sh <(echo "$STAGING_PRIVATE_KEY" | base64 -d) $STAGING_PRIVATE_KEY_PWD
-    - apt-get install rsync
+    - apt-get install rsync -qqy
   script:
     - ssh -p22 $SSH_USER@$CI_ENVIRONMENT_URL "mkdir -p ~/vvp-web/tmp"
     - rsync -rav -e ssh --exclude='.git/' --exclude='.gitlab-ci.yml' --delete-excluded ./ $SSH_USER@$CI_ENVIRONMENT_URL:/vvp-web/tmp
