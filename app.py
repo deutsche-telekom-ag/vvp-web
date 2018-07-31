@@ -2,8 +2,9 @@
 
 from sanic import Sanic, exceptions, response
 from jinja2 import Environment, PackageLoader
+
 import redis, os, uuid, json, asyncio
-from test_runner import test_runner
+from utils import test_runner
 
 app = Sanic(__name__)
 env = Environment(loader=PackageLoader('app', 'templates'), trim_blocks=True)
@@ -12,6 +13,7 @@ redis = redis.StrictRedis(host='localhost', port=6379, db=0, decode_responses=Tr
 
 upload_dir = "./uploads"
 app.static('/static', './static')
+
 
 @app.route('/')
 async def index(request):
@@ -40,6 +42,7 @@ async def upload_file(request):
     return response.json({'image_url': '/static/images/zip-file_graphical.svg',
                           'uid': unique_id})
 
+
 @app.route("/next/<uid>", methods=['GET', 'POST'])
 async def process_heat(request, uid):
     path = redis.get("ul_" + uid)
@@ -52,6 +55,7 @@ async def process_heat(request, uid):
         return response.html(env.get_template('error.html').render(error="Could not find uid."))
     return response.html(env.get_template('progress.html').render(uid=uid))
 
+
 @app.route("/status/<uid>", methods=['GET'])
 async def return_status(request, uid):
     status = redis.get("status_" + uid)
@@ -60,6 +64,7 @@ async def return_status(request, uid):
         return response.json(False, 500)
     return response.json(json.loads(status))
 
+
 @app.route("/result/<uid>", methods=['GET', 'POST'])
 async def show_results(request, uid):
     res = redis.get("results_" + uid)
@@ -67,6 +72,7 @@ async def show_results(request, uid):
     if not res:
         return response.html(env.get_template('error.html').render(error="Could not find test results for uid."))
     return response.html(env.get_template('results.html').render(result=json.loads(res), items=json.loads(tests)))
+
 
 @app.route("/delete/<uid>", methods=['POST'])
 async def upload_file(request, uid):
@@ -79,11 +85,13 @@ async def upload_file(request, uid):
     redis.delete("ul_" + uid)
     return response.json(True)
 
+
 @app.route("/no_file_selected")
 async def no_file_selected(request):
     template = env.get_template('error.html') #replace this with a nicer looking page later on
     html = template.render(error="No file selected.")
     return response.html(html)
+
 
 @app.exception(exceptions.SanicException)
 async def server_error(request, exception):
