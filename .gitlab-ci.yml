@@ -38,7 +38,7 @@ deploy_staging:
     ## without extra base64 encoding.
     ## https://gitlab.com/gitlab-examples/ssh-private-key/issues/1#note_48526556
     ##
-    - ./ssh-add-pass.sh <$(echo "$STAGING_PRIVATE_KEY" | tr -d '\r') $STAGING_PRIVATE_KEY_PWD
+    - ./ssh-add-pass.sh <$(tr -d '\r' $(echo $STAGING_PRIVATE_KEY)) $STAGING_PRIVATE_KEY_PWD
     ##
     ## Create the SSH directory and give it the right permissions
     ##
