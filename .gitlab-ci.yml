@@ -35,6 +35,6 @@ deploy_staging:
     - ./ssh-add-pass.sh <(echo "$STAGING_PRIVATE_KEY" | base64 -d) $STAGING_PRIVATE_KEY_PWD
     - apt-get install rsync -qqy
   script:
-    - ssh -p22 $SSH_USER@$CI_ENVIRONMENT_URL "mkdir -p ~/vvp-web/tmp"
-    - rsync -rav -e ssh --exclude='.git/' --exclude='.gitlab-ci.yml' --delete-excluded ./ $SSH_USER@$CI_ENVIRONMENT_URL:/vvp-web/tmp
-    - ssh -p22 $SSH_USER@$CI_ENVIRONMENT_URL "docker-compose -f ~/vvp-web/tmp/docker-compose.yml up -d --build"
+    - ssh -p22 $(echo $SSH_USER)@$(echo $CI_ENVIRONMENT_URL) "mkdir -p ~/vvp-web/tmp"
+    - rsync -rav -e ssh --exclude='.git/' --exclude='.gitlab-ci.yml' --delete-excluded ./ $(echo $SSH_USER)@$(echo $CI_ENVIRONMENT_URL):/vvp-web/tmp
+    - ssh -p22 $(echo $SSH_USER)@$(echo $CI_ENVIRONMENT_URL) "docker-compose -f ~/vvp-web/tmp/docker-compose.yml up -d --build"
