@@ -11,6 +11,6 @@ pass=$( echo $2)
 expect << EOF
   spawn ssh-add $1
   expect "Enter passphrase"
-  send "$pass\r"
+  send "$pass\n"
   expect eof
 EOF
