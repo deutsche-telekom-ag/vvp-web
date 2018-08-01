@@ -29,7 +29,11 @@ deploy_staging:
   before_script:
     - apt-get update -qqy && apt-get install expect -qqy
     - 'which ssh-agent || ( apt-get install openssh-client -qqy )'
+    ##
+    ## Create the SSH directory and give it the right permissions
+    ##
     - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
     - eval $(ssh-agent -s)
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
     - chmod +x ssh-add-pass.sh
@@ -45,11 +49,7 @@ deploy_staging:
     - cat ~/.ssh/id_rsa
     - chmod 0600 ~/.ssh/id_rsa
     - ./ssh-add-pass.sh ~/.ssh/id_rsa
-    ##
-    ## Create the SSH directory and give it the right permissions
-    ##
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
+    - ssh-add -l
     - apt-get install rsync -qqy
   script:
     - ssh -p22 $(echo $SSH_USER)@$(echo $STAGING_URL) "mkdir -p ~/vvp-web/tmp"
