@@ -53,5 +53,5 @@ deploy_staging:
     - apt-get install rsync -qqy
   script:
     - ssh -p22 $(echo $SSH_USER)@$(echo $STAGING_URL) "mkdir -p ~/vvp-web/tmp"
-    - rsync -rav -e ssh --exclude='.git/' --exclude='.gitlab-ci.yml' --delete-excluded ./ $(echo $SSH_USER)@$(echo $STAGING_URL):/vvp-web/tmp
+    - rsync -rav -e ssh --exclude='.git/' --exclude='.gitlab-ci.yml' --delete-excluded ./ $(echo $SSH_USER)@$(echo $STAGING_URL):~/vvp-web/tmp
     - ssh -p22 $(echo $SSH_USER)@$(echo $STAGING_URL) "docker-compose -f ~/vvp-web/tmp/docker-compose.yml up -d --build"
