@@ -4,3 +4,4 @@ Jinja2
 PyYAML
 pytest
 pytest-html
+pexpect

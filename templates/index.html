@@ -4,8 +4,28 @@
 {% block head %}
     {{ super() }}
     <link rel="stylesheet" href="/static/css/component-dropzone.css">
+    <link rel="stylesheet" href="/static/css/spinkit.css">
+    <link rel="stylesheet" href="/static/css/7-three-bounce.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="/static/js/dropzone.js"></script>
     <script src="/static/js/custom-dropzone.js"></script>
+    <script src="/static/js/tabPages.js"></script>
+    <script src="/static/js/git_init.js"></script>
+    <script src="/static/js/clipboard.min.js"></script>
+
+    <!-- initialize components -->
+    <script>
+        $(function () {
+            // initialize tabs
+            var tab = TabPages.init('myTabPage');
+            tab.selectTab('upload');
+            // initialize clipboard copy
+            new ClipboardJS('.copy');
+            // initialize tooltips
+            $('[data-toggle="tooltip"]').tooltip()
+        });
+    </script>
+
 {% endblock %}
 {% block body %}
     <div class="site-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
@@ -14,19 +34,51 @@
             to test their interoperability with the ONAP project.</p>
     </div>
     <div class="container w-50">
-        <div class="card-deck text-center">
-            <div class="card box-shadow">
-                <div class="card-header">
-                    <h4 class="my-0 font-weight-normal">Upload</h4>
-                </div>
-                <div class="card-body">
-                    <form action="/no_file_selected" id="file-upload-form">
-                        <div class="mb-4">
-                            <div id="dropzone" class="dropzone"></div>
+        <br>
+
+        <div class="card box-shadow text-center" data-tabs="myTabPage">
+            <div class="card-header">
+                <ul class="nav nav-pills card-header-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link" data-tab-page="upload"
+                           onclick="TabPages.tabPageSelector(this, 'myTabPage');">Upload</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" data-tab-page="git" id="nav_git"
+                           onclick="TabPages.tabPageSelector(this, 'myTabPage');git_init();">Git
+                            <span class="js-secret-variables-save-loading-icon" id="git_loading" style="display: none;">
+                                <i aria-hidden="true" data-hidden="true" class="fa fa-spinner fa-spin"></i>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body" data-tab-page="upload">
+                <form action="/no_file_selected" id="file-upload-form">
+                    <div class="mb-4">
+                        <div id="dropzone" class="dropzone"></div>
+                    </div>
+                    <button type="submit" class="btn btn-lg btn-primary btn-outline-primary magenta">Submit
+                    </button>
+                </form>
+            </div>
+            <div class="card-body" data-tab-page="git">
+                <div class="col">
+                    <h4>Clone via HTTP/HTTPS</h4>
+                    <div class="input-group mb-3" disabled style="padding-top: 2%">
+                        <input type="text" class="form-control" placeholder="..."
+                               value="" id="git_url_text_field"
+                               aria-label="git_url" aria-describedby="git_url" readonly="readonly"
+                               onClick="this.setSelectionRange(0, this.value.length)" disabled>
+                        <div class="input-group-append">
+                            <button class="btn btn-icon btn-primary btn-outline-primary magenta copy" type="button"
+                                    disabled
+                                    data-clipboard-target="#git_url_text_field" id="button_git_url_copy"
+                                    data-toggle="tooltip" data-placement="top" title="Copy to clipboard">
+                                <i class="icon icon-copy" aria-hidden="true"></i>
+                            </button>
                         </div>
-                        <button type="submit" class="btn btn-lg btn-primary btn-outline-primary w-25 magenta">Submit
-                        </button>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
