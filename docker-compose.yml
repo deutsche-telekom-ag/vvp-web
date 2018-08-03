@@ -3,25 +3,45 @@ version: '3'
 services:
   vvp-web:
     depends_on:
-      - git-daemon
+      - redis
+      - git-http
       - ssh-daemon
     build: .
     restart: always
     networks:
       public:
-        ipv4_address: 10.10.0.2
+        ipv4_address: 10.10.0.3
       internal:
         ipv4_address: 10.11.0.4
-    ports:
-      - "8913:8913"
 
-  git-daemon:
-    build: ./container/git-daemon
+  nginx:
+    build: ./container/nginx
+    restart: always
+    networks:
+      public:
+        ipv4_address: 10.10.0.10
+    ports:
+      - "443:443"
+      - "80:80"
+
+  redis:
+    image: "redis:alpine"
+    networks:
+      internal:
+        ipv4_address: 10.11.0.20
+    environment:
+      - REDIS_HOST=10.11.0.20
+    volumes:
+      - ./redis:/data
+
+  git-http:
+    build: ./container/git-http
     restart: always
     networks:
       internal:
         ipv4_address: 10.11.0.3
     volumes:
+      - ./git:/git
       - git-data:/git
 
   ssh-daemon:
