@@ -1,7 +1,7 @@
 image: docker:latest
 
-variables:
-  GIT_SUBMODULE_STRATEGY: recursive
+#variables:
+#  GIT_SUBMODULE_STRATEGY: recursive
 
 services:
   - docker:dind
@@ -16,4 +16,5 @@ before_script:
 
 build_image:
   script:
+    - docker build ./container/python3-sanic -t python3-sanic
     - docker-compose build

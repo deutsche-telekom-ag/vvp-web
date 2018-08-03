@@ -15,14 +15,15 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Install git
 RUN apt-get update -qq
+RUN apt-get install -qqy git apache2 gitweb openssh-server
 
-RUN apt-get install -qqy git
-
-ADD git-daemon.sh /usr/bin/git-daemon.sh
-RUN chmod +x /usr/bin/git-daemon.sh
+#ADD git-daemon.sh /usr/bin/git-daemon.sh
+#RUN chmod +x /usr/bin/git-daemon.sh
+ADD git_support.conf /etc/apache2/sites-available/git_support.conf
+RUN a2ensite git_support
+RUN a2enmod cgi alias env
 VOLUME /git
 
-RUN apt-get install -qqy openssh-server
 RUN mkdir /var/run/sshd
 RUN echo 'root:git_sshd' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -41,4 +42,4 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 # git daemon ports
 EXPOSE 9418 22
 
-CMD /usr/bin/git-daemon.sh && ["/usr/sbin/sshd", "-D"]
+CMD service apache2 start && /usr/sbin/sshd -D && git daemon --export-all --base-path=/git --listen=0.0.0.0 --port=9418

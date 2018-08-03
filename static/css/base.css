@@ -42,3 +42,46 @@ html {
     background-color: #e20074;
     border-color: #e20074;
 }
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #e20074;
+}
+
+.form-control:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: #e20074;
+    outline: 0;
+    box-shadow: none !important;
+}
+
+.form-control[readonly] {
+    background-color: #fff !important;
+}
+
+.btn.focus, .btn:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: #e20074;
+    outline: 0;
+    box-shadow: none !important;
+}
+
+.btn-outline-primary:not(:disabled):not(.disabled).active, .btn-outline-primary:not(:disabled):not(.disabled):active, .show > .btn-outline-primary.dropdown-toggle {
+    color: #fff;
+    background-color: #e20074;
+    border-color: #e20074;
+}
+
+a {
+    color: #495057;
+}
+
+a:hover {
+    color: #e20074;
+}
+
+a:not([href]):not([tabindex]):hover:not(.active) {
+    color: #e20074;
+}
