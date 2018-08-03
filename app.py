@@ -113,6 +113,7 @@ async def git_commit(request, uid):
     unique_id = str(uuid.uuid4())
     print("Generated uuid for run: " + unique_id)
     print("Should checkout now!")
+
     # path = git_repo_dir + "/"+uid+".git/"
     # RedisRun(unique_id).set_path(path)
     # print("Running test_runner..")

@@ -81,13 +81,14 @@ async def run_tests(uid, path):
                 shutil.copyfileobj(source, target)
         rl.set_status("Extracted " + str(len(zip.namelist())) + " file(s).", 10)
     await asyncio.sleep(1)
-    asyncio.gather(__do_run(rl, uid, dir))
+    asyncio.ensure_future(__do_run(rl, uid))
 
 
-async def __do_run(rl, uid, dir):
+async def __do_run(rl, uid):
     rl.set_status("Running pytest..", 20)
     abs_path = os.path.abspath("vvp-validation-scripts/ice_validator/")
     print("Starting pytest on scripts in: " + abs_path)
+    dir = rl.get_path()
     pp = ProgressPlugin(rl, uid)
     # example:
     # pytest vvp-validation-scripts/ice_validator/ --tap-stream --template-directory=/home/nacho/clearwater-onap --html=report.html --self-contained-html

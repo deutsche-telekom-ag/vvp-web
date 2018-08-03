@@ -1,6 +1,9 @@
-import uuid, io, pexpect
+import uuid, io, subprocess, asyncio, os
 from uuid import UUID
 from pexpect import pxssh
+
+from utils import test_runner
+from utils.redis_layer import RedisRun
 
 base_dir = "tests/test"
 
@@ -78,4 +81,16 @@ def setup_commit_hook(uid):
 
 
 async def get_repo(run_uid, git_uid):
-    pexpect.spawnu("git clone http://" + GIT_HOSTNAME + "/git/" + git_uid + " " + base_dir + run_uid)
+    proc = subprocess.Popen(['git', 'clone',
+                             "http://" + GIT_HOSTNAME + "/git/" + git_uid,
+                             base_dir + run_uid],
+                            shell=False, cwd='/vvp-web')
+
+    out, err = proc.communicate()
+    status = proc.wait()
+    if 'fatal' in out:
+        return {'status': 'error', 'uid': git_uid, 'run': run_uid, 'log': [out, err]}
+    else:
+        rl = RedisRun(run_uid).set_path(os.path.abspath(base_dir + run_uid + '/'))
+        asyncio.ensure_future(test_runner.__do_run(rl, run_uid))
+        return {'status': 'success', 'uid': git_uid, 'run': run_uid, 'log': [out, err]}
