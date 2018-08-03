@@ -81,7 +81,7 @@ async def run_tests(uid, path):
                 shutil.copyfileobj(source, target)
         rl.set_status("Extracted " + str(len(zip.namelist())) + " file(s).", 10)
     await asyncio.sleep(1)
-    __do_run(rl, uid, dir)
+    asyncio.gather(__do_run(rl, uid, dir))
 
 
 async def __do_run(rl, uid, dir):
