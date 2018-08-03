@@ -9,8 +9,6 @@ services:
     build: .
     restart: always
     networks:
-      public:
-        ipv4_address: 10.10.0.3
       internal:
         ipv4_address: 10.11.0.4
 
@@ -20,6 +18,8 @@ services:
     networks:
       public:
         ipv4_address: 10.10.0.10
+      internal:
+        ipv4_address: 10.11.0.10
     ports:
       - "443:443"
       - "80:80"
@@ -32,7 +32,7 @@ services:
     environment:
       - REDIS_HOST=10.11.0.20
     volumes:
-      - ./redis:/data
+      - redis-data:/data
 
   git-http:
     build: ./container/git-http
@@ -41,7 +41,6 @@ services:
       internal:
         ipv4_address: 10.11.0.3
     volumes:
-      - ./git:/git
       - git-data:/git
 
   ssh-daemon:
@@ -49,7 +48,7 @@ services:
     restart: always
     networks:
       internal:
-        ipv4_address: 10.11.0.4
+        ipv4_address: 10.11.0.2
     volumes:
       - git-data:/git
 
@@ -73,4 +72,6 @@ networks:
 
 volumes:
   git-data:
+    driver: local
+  redis-data:
     driver: local

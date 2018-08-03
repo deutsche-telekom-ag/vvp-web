@@ -4,7 +4,7 @@ from pexpect import pxssh
 
 base_dir = "tests/test"
 
-GIT_HOSTNAME = "10.11.0.3"
+GIT_HOSTNAME = "10.11.0.2"
 GIT_USERNAME = "root"
 GIT_PASSWORD = "git_sshd"
 
