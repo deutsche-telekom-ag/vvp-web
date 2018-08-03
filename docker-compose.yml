@@ -10,7 +10,7 @@ services:
     restart: always
     networks:
       internal:
-        ipv4_address: 10.11.0.4
+        ipv4_address: 10.11.0.50
 
   nginx:
     build: ./container/nginx
@@ -39,7 +39,7 @@ services:
     restart: always
     networks:
       internal:
-        ipv4_address: 10.11.0.3
+        ipv4_address: 10.11.0.21
     volumes:
       - git-data:/git
 
@@ -48,7 +48,7 @@ services:
     restart: always
     networks:
       internal:
-        ipv4_address: 10.11.0.2
+        ipv4_address: 10.11.0.22
     volumes:
       - git-data:/git
 
@@ -65,7 +65,8 @@ networks:
         - subnet: 10.10.0.0/24
   internal:
     # use bridge driver in subnet "10.11.0.0/24"
-    driver: bridge
+    driver: overlay
+    internal: true
     ipam:
       config:
         - subnet: 10.11.0.0/24

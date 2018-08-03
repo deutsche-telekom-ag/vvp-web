@@ -4,9 +4,9 @@ from pexpect import pxssh
 
 base_dir = "tests/test"
 
-GIT_HOSTNAME = "10.11.0.2"
-GIT_USERNAME = "root"
-GIT_PASSWORD = "git_sshd"
+SSHD_HOSTNAME = "10.11.0.22"
+SSHD_USERNAME = "root"
+SSHD_PASSWORD = "git_sshd"
 
 
 def create_repo():
@@ -23,7 +23,7 @@ def setup_repo():
     try:
         s = pxssh.pxssh()
         s.logfile = flog
-        s.login(GIT_HOSTNAME, GIT_USERNAME, GIT_PASSWORD)
+        s.login(SSHD_HOSTNAME, SSHD_USERNAME, SSHD_PASSWORD)
         s.sendline("cd /git")
         s.prompt()
         s.sendline("mkdir " + uid + ".git")
@@ -52,7 +52,7 @@ def setup_commit_hook(uid):
             raise ValueError
         s = pxssh.pxssh()
         s.logfile = flog
-        s.login(GIT_HOSTNAME, GIT_USERNAME, GIT_PASSWORD)
+        s.login(SSHD_HOSTNAME, SSHD_USERNAME, SSHD_PASSWORD)
         s.sendline("cd /git")
         s.prompt()
         s.sendline("if [ -d \"./" + uid + ".git\" ]; then echo DIR_OKAY; fi")
@@ -78,4 +78,4 @@ def setup_commit_hook(uid):
 
 
 async def get_repo(run_uid, git_uid):
-    pexpect.spawnu("git clone http://" + GIT_HOSTNAME + "/git/" + git_uid + " " + base_dir + run_uid)
+    pexpect.spawnu("git clone http://" + SSHD_HOSTNAME + "/git/" + git_uid + " " + base_dir + run_uid)
