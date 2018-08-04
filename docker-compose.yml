@@ -32,7 +32,7 @@ services:
     environment:
       - REDIS_HOST=10.11.0.20
     volumes:
-      - redis-data:/data
+      - ./redis:/data
 
   git-http:
     build: ./container/git-http
@@ -41,7 +41,7 @@ services:
       internal:
         ipv4_address: 10.11.0.21
     volumes:
-      - git-data:/git
+      - ./git:/git
 
   ssh-daemon:
     build: ./container/ssh-daemon
@@ -50,7 +50,7 @@ services:
       internal:
         ipv4_address: 10.11.0.22
     volumes:
-      - git-data:/git
+      - ./git:/git
 
 networks:
   public:
@@ -70,9 +70,3 @@ networks:
     ipam:
       config:
         - subnet: 10.11.0.0/24
-
-volumes:
-  git-data:
-    driver: local
-  redis-data:
-    driver: local
