@@ -5,7 +5,7 @@ from jinja2 import Environment, PackageLoader
 
 import os, uuid, json, asyncio
 from utils import test_runner
-from utils.git_provision import setup_repo, setup_commit_hook, create_repo
+from utils.git_provision import setup_repo, setup_commit_hook
 from utils.redis_layer import RedisRun, RedisGit
 
 app = Sanic(__name__)

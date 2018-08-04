@@ -1,12 +1,12 @@
-import uuid, io, pexpect
+import uuid, io, pexpect, os
 from uuid import UUID
 from pexpect import pxssh
 
 base_dir = "tests/test"
 
-SSHD_HOSTNAME = "10.11.0.22"
-SSHD_USERNAME = "root"
-SSHD_PASSWORD = "git_sshd"
+SSHD_HOSTNAME = os.environ["SSHD_HOSTNAME"]
+SSHD_USERNAME = os.environ["SSHD_USERNAME"]
+SSHD_PASSWORD = os.environ["SSHD_PASSWORD"]
 
 
 def create_repo():

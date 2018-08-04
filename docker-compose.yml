@@ -7,6 +7,10 @@ services:
       - git-http
       - ssh-daemon
     build: .
+    environment:
+      - SSHD_HOSTNAME=10.11.0.22
+      - SSHD_USERNAME=root
+      - SSHD_PASSWORD=git_sshd
     restart: always
     networks:
       internal:
