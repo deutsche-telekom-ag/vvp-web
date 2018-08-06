@@ -1,8 +1,14 @@
 version: '3'
 
 services:
+
+python3-sanic:
+    image: python3-sanic
+    build: ./container/python3-sanic
+
   vvp-web:
     depends_on:
+      - python3-sanic
       - redis
       - git-http
       - ssh-daemon
