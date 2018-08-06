@@ -1,7 +1,7 @@
 import redis, json, os
 
-redis_host = os.environ["REDIS_HOST"]
-redis = redis.StrictRedis(host=redis_host, port=6379, db=0, decode_responses=True)
+# Use docker host alias
+redis = redis.StrictRedis(host="redis", port=6379, db=0, decode_responses=True)
 
 '''
 Basic storage object layout:

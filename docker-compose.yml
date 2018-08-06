@@ -8,7 +8,6 @@ services:
       - ssh-daemon
     build: .
     environment:
-      - SSHD_HOSTNAME=10.11.0.22
       - SSHD_USERNAME=root
       - SSHD_PASSWORD=git_sshd
     restart: always
@@ -34,7 +33,7 @@ services:
       internal:
         ipv4_address: 10.11.0.20
     environment:
-      - REDIS_HOST=10.11.0.20
+      - REDIS_HOST=10.11.0.20 #TODO: @vscharf - why?
     volumes:
       - ./redis:/data
 
