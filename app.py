@@ -5,7 +5,7 @@ from jinja2 import Environment, PackageLoader
 
 import os, uuid, json, asyncio
 from utils import test_runner
-from utils.git_provision import setup_repo, setup_commit_hook, create_repo
+from utils.git_provision import setup_repo, setup_commit_hook, create_repo, get_repo
 from utils.redis_layer import RedisRun, RedisGit
 
 app = Sanic(__name__)
@@ -107,12 +107,17 @@ async def git_runs(request, uid):
     return response.json(RedisGit(uid).get_runs())
 
 
+@app.route("/vincenthathunger/<uid>")
+async def run_result(request, uid):
+    return response.json(RedisRun(uid).get_result())
+
 @app.route("/commit/<uid>")
 async def git_commit(request, uid):
     print("New commit in repo: " + uid)
     unique_id = str(uuid.uuid4())
     print("Generated uuid for run: " + unique_id)
-    print("Should checkout now!")
+    print("Checking out..")
+    get_repo(unique_id, uid)
 
     # path = git_repo_dir + "/"+uid+".git/"
     # RedisRun(unique_id).set_path(path)

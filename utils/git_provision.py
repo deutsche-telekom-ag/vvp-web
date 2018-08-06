@@ -68,6 +68,8 @@ def setup_commit_hook(uid):
         s.prompt()
         s.sendline("echo \"wget 10.11.0.4:8913/commit/" + uid + " -O- > /dev/null\" > post-receive")
         s.prompt()
+        s.sendline("chmod +x ./post-receive")
+        s.prompt()
         s.logout()
         flog.flush()
         return {'status': 'success', 'uid': uid, 'log': flog.getvalue().decode("utf-8")}
@@ -92,5 +94,6 @@ async def get_repo(run_uid, git_uid):
         return {'status': 'error', 'uid': git_uid, 'run': run_uid, 'log': [out, err]}
     else:
         rl = RedisRun(run_uid).set_path(os.path.abspath(base_dir + run_uid + '/'))
-        asyncio.ensure_future(test_runner.__do_run(rl, run_uid))
+        # asyncio.ensure_future(test_runner.__do_run(rl, run_uid))
+        print("Should ensure_future now!")
         return {'status': 'success', 'uid': git_uid, 'run': run_uid, 'log': [out, err]}
