@@ -2,7 +2,7 @@ version: '3'
 
 services:
 
-python3-sanic:
+  python3-sanic:
     image: python3-sanic
     build: ./container/python3-sanic
 
