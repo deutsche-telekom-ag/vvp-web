@@ -19,7 +19,6 @@ build_image:
     - apk add python python-dev py-pip build-base
     - pip install docker-compose
   script:
-    - docker build ./container/python3-sanic -t python3-sanic
     - docker-compose build
 
 deploy_staging:
