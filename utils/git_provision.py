@@ -4,7 +4,8 @@ from pexpect import pxssh
 
 base_dir = "tests/test"
 
-SSHD_HOSTNAME = os.environ["SSHD_HOSTNAME"]
+# Use docker host alias
+SSHD_HOSTNAME = "ssh-daemon"
 SSHD_USERNAME = os.environ["SSHD_USERNAME"]
 SSHD_PASSWORD = os.environ["SSHD_PASSWORD"]
 
@@ -63,7 +64,8 @@ def setup_commit_hook(uid):
                     'log': flog.getvalue().decode("utf-8")}
         s.sendline("cd " + uid + ".git/hooks")
         s.prompt()
-        s.sendline("echo \"wget 10.11.0.4:8913/commit/" + uid + " -O- > /dev/null\" > post-receive")
+        # Use docker host alias
+        s.sendline("echo \"wget http://vvp-web:8913/commit/" + uid + " -O- > /dev/null\" > post-receive")
         s.prompt()
         s.logout()
         flog.flush()
