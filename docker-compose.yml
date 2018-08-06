@@ -4,7 +4,7 @@ services:
   vvp-web:
     depends_on:
       - redis
-      - git-daemon
+      - git-http
     build: .
     restart: always
     networks:
@@ -37,8 +37,8 @@ services:
     volumes:
       - ./redis:/data
 
-  git-daemon:
-    build: ./container/git-daemon
+  git-http:
+    build: ./container/git-http
     restart: always
     networks:
       internal:
