@@ -68,7 +68,7 @@ class RedisRun:
         #print("get path: " + repr(self.__d))
         return self.__d['path']
 
-    def set_status(self, message="", progress=0, state="running"):
+    def set_status(self, message="", progress=0, state="running", ):
         self.__reload()
         self.__d['status'] = {'message': message, 'progress': progress, 'state': state}
         self.__store()
@@ -101,6 +101,12 @@ class RedisRun:
     def get(self):
         self.__reload()
         return self.__d
+
+    def set(self, key, val):
+        self.__reload()
+        self.__d[key] = val
+        self.__store()
+        return self
 
 
 class RedisGit:
