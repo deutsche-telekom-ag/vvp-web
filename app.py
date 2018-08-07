@@ -57,7 +57,8 @@ async def process_heat(request, uuid):
         # TODO: Maybe take path out of this later on as its not required
         asyncio.ensure_future(test_runner.run_tests(uuid, path))
     else:
-        return response.html(env.get_template('error.html').render(error="Could not find uuid."))
+        return response.html(env.get_template('error.html').render(
+            error="Could not find (path for) uuid. (status=" + rl.get_status() + ")"))
     return response.html(env.get_template('progress.html').render(uid=uuid))
 
 
@@ -109,7 +110,7 @@ async def git_runs(request, id):
     return response.json(RedisGit(id).get_runs())
 
 
-@app.route("/vincenthathunger/<id>")
+@app.route("/runs/<id>")
 async def run_result(request, id):
     return response.json(RedisRun(id).get_result())
 
@@ -122,6 +123,7 @@ async def git_commit(request, id):
     return response.json(await checkout_repo(unique_id, id))
 
 
+# debug-ish function
 @app.route("/uuid/<id>")
 async def get_uuid(request, id):
     v = RedisId(id).get()

@@ -1,10 +1,10 @@
 import asyncio, uuid
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 
 from utils import redis_layer
 from utils.redis_layer import RedisId
 
-process_pool = ProcessPoolExecutor(3)
+process_pool = ThreadPoolExecutor(3)
 
 
 async def subprocess_exec(args, id=None):
@@ -37,24 +37,24 @@ async def subprocess_exec(args, id=None):
 
 async def thread_exec(target, args, kwargs):
     exec_uuid = str(uuid.uuid1().hex)
-    print(exec_uuid + " : thread_exec(" + ' '.join(args) + ")")
-    RedisId(exec_uuid).set_status('starting').set_message("thread_exec(" + ' '.join(args) + ")")
+    print(exec_uuid + " : thread_exec(" + ' '.join(args) + ' '.join(kwargs) + ")")
+    RedisId(exec_uuid).set_status('starting').set_message("thread_exec(" + ' '.join(kwargs) + ")")
     loop = asyncio.get_event_loop()
-    loop.run_in_executor(process_pool, __thread_exec_helper, [target, args, kwargs, exec_uuid])
+    asyncio.ensure_future(loop.run_in_executor(process_pool, __thread_exec_helper, *[target, args, kwargs, exec_uuid]))
     return exec_uuid
 
-
-@asyncio.coroutine
 def __thread_exec_helper(target, kwargs, args, exec_uuid):
+    print("hi")
     r = RedisId(exec_uuid).set_status('running')
     try:
-        if not type(target) is 'function':
-            r.set_status('error').set_message('target is not a function')
+        if not callable(target):
+            r.set_status('error').set_message('target is not callable: ' + str(type(target)))
             return
         r.set_message("thread_exec(..) calling target")
-        v = target(*args, **kwargs)
+        v = target(args, kwargs)
         r.set_message(" : target(..) finished.")
         r.set_status('success').set_message('target execution finished').set('return', repr(v))
     except Exception as e:
+        print("Thread exec error! " + repr(e))
         r.set_status('error').set_message('uncaught exception in thread').set('exception', repr(e))
         return

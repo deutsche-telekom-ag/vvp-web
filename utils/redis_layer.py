@@ -162,6 +162,8 @@ class RedisId:
         self.__reload()
         if val is None and key_or_dict is not None:
             self.__d = key_or_dict
+        else:
+            self.__d[key_or_dict] = val
         self.__store()
         return self
 

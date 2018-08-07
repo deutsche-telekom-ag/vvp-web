@@ -1,6 +1,7 @@
 # coding=utf-8
 import json, os, zipfile, asyncio, pytest, shutil, threading
 
+from utils import async_exec
 from utils.redis_layer import RedisRun
 
 base_dir = "tests/test"
@@ -63,7 +64,9 @@ class ProgressPlugin:
 
 async def run_tests(uid, path):
     rl = RedisRun(uid)
-    if rl.get_status()['progress'] <= 20:
+    if rl.get_status()['progress'] > 20:
+        return
+    elif rl.get_status()['progress'] <= 20:
         rl.set_status("Unpacking zip file..", 5)
         dir = os.path.abspath(base_dir + uid + '/')
         await asyncio.sleep(2)
@@ -85,13 +88,13 @@ async def run_tests(uid, path):
                     shutil.copyfileobj(source, target)
             rl.set_status("Extracted " + str(len(zip.namelist())) + " file(s).", 10)
     await asyncio.sleep(1)
-    asyncio.ensure_future(__do_run(rl, uid))
+    asyncio.ensure_future(__do_run(uid))
 
 
-async def __do_run(rl, uid):
-    rl.set_status("Running pytest..", 20)
+async def __do_run(uid):
+    rl = RedisRun(uid).set_status("Running pytest..", 20)
     abs_path = os.path.abspath("vvp-validation-scripts/ice_validator/")
-    print("Starting pytest on scripts in: " + abs_path)
+    # print("Starting pytest on scripts in: " + abs_path)
     dir = rl.get_path()
     pp = ProgressPlugin(rl, uid)
     # example:
@@ -101,6 +104,13 @@ async def __do_run(rl, uid):
                                                                    '--html=' + dir + '/report.html',
                                                                    '--self-contained-html'],
                                                           'plugins': [pp]})
+    print("Ensuring future of pytest.main..")
+    asyncio.ensure_future(async_exec.thread_exec(target=pytest.main, kwargs={'args': [abs_path, '-p', 'no:terminal',
+                                                                                      '--template-directory=' + dir + '/',
+                                                                                      '--html=' + dir + '/report.html',
+                                                                                      '--self-contained-html'],
+                                                                             'plugins': [pp]}, args=[]))
+    print("__do_run end")
     # run in another thread or it blocks our eventloop
-    thread.start()
-    print("Thread started. (" + repr(thread) + ')')
+    # thread.start()
+    #print("Thread started. (" + repr(thread) + ')')
