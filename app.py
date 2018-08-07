@@ -5,8 +5,10 @@ from jinja2 import Environment, PackageLoader
 
 import os, uuid, json, asyncio
 from utils import test_runner
-from utils.git_provision import setup_repo, setup_commit_hook, create_repo, get_repo
-from utils.redis_layer import RedisRun, RedisGit
+from utils.git_provision import *
+from utils.redis_layer import RedisRun, RedisGit, RedisId
+
+from utils import redis_layer
 
 app = Sanic(__name__)
 env = Environment(loader=PackageLoader('app', 'templates'), trim_blocks=True)
@@ -44,45 +46,45 @@ async def upload_file(request):
                           'uid': unique_id})
 
 
-@app.route("/next/<uid>", methods=['GET', 'POST'])
-async def process_heat(request, uid):
-    rl = RedisRun(uid)
+@app.route("/next/<uuid>", methods=['GET', 'POST'])
+async def process_heat(request, uuid):
+    rl = RedisRun(uuid)
     path = rl.get_path()
     if path:
         path = os.path.abspath(path)
         print(path)
         rl.set_status("Starting test run..", 1, "running")
         # TODO: Maybe take path out of this later on as its not required
-        asyncio.ensure_future(test_runner.run_tests(uid, path))
+        asyncio.ensure_future(test_runner.run_tests(uuid, path))
     else:
-        return response.html(env.get_template('error.html').render(error="Could not find uid."))
-    return response.html(env.get_template('progress.html').render(uid=uid))
+        return response.html(env.get_template('error.html').render(error="Could not find uuid."))
+    return response.html(env.get_template('progress.html').render(uid=uuid))
 
 
-@app.route("/status/<uid>", methods=['GET'])
-async def return_status(request, uid):
-    status = RedisRun(uid).get_status()
+@app.route("/status/<uuid>", methods=['GET'])
+async def return_status(request, uuid):
+    status = RedisRun(uuid).get_status()
     print(status)
     if not status:
         return response.json(False, 500)
     return response.json(status)
 
 
-@app.route("/result/<uid>", methods=['GET', 'POST'])
-async def show_results(request, uid):
-    rl = RedisRun(uid)
+@app.route("/result/<uuid>", methods=['GET', 'POST'])
+async def show_results(request, uuid):
+    rl = RedisRun(uuid)
     res = rl.get_result()
     tests = rl.get_tests()
     if not res:
-        return response.html(env.get_template('error.html').render(error="Could not find test results for uid."))
+        return response.html(env.get_template('error.html').render(error="Could not find test results for uuid."))
     return response.html(env.get_template('results.html').render(result=res, items=tests))
 
 
-@app.route("/delete/<uid>", methods=['POST'])
-async def upload_file(request, uid):
-    path = RedisRun(uid).get_path()
-    if not uid or not path:
-        print("Error: Could not get uid '"+uid+"' from Redis.")
+@app.route("/delete/<uuid>", methods=['POST'])
+async def upload_file(request, uuid):
+    path = RedisRun(uuid).get_path()
+    if not uuid or not path:
+        print("Error: Could not get uuid '" + uuid + "' from Redis.")
         return response.json(False, 400)
     print("Deleting: '" + path + "' on user request.")
     os.remove(path)
@@ -102,29 +104,28 @@ async def git_init(request):
     return response.json(v)
 
 
-@app.route("/runs/<uid>")
-async def git_runs(request, uid):
-    return response.json(RedisGit(uid).get_runs())
+@app.route("/runs/<id>")
+async def git_runs(request, id):
+    return response.json(RedisGit(id).get_runs())
 
 
-@app.route("/vincenthathunger/<uid>")
-async def run_result(request, uid):
-    return response.json(RedisRun(uid).get_result())
+@app.route("/vincenthathunger/<id>")
+async def run_result(request, id):
+    return response.json(RedisRun(id).get_result())
 
-@app.route("/commit/<uid>")
-async def git_commit(request, uid):
-    print("New commit in repo: " + uid)
+
+@app.route("/commit/<id>")
+async def git_commit(request, id):
+    print("New commit in repo: " + id)
     unique_id = str(uuid.uuid4())
     print("Generated uuid for run: " + unique_id)
-    print("Checking out..")
-    get_repo(unique_id, uid)
+    return response.json(await checkout_repo(unique_id, id))
 
-    # path = git_repo_dir + "/"+uid+".git/"
-    # RedisRun(unique_id).set_path(path)
-    # print("Running test_runner..")
-    # process_heat(None, uid)
-    return response.json({'status': 'success'})
 
+@app.route("/uuid/<id>")
+async def get_uuid(request, id):
+    v = RedisId(id).get()
+    return response.json(v)
 
 @app.exception(exceptions.SanicException)
 async def server_error(request, exception):

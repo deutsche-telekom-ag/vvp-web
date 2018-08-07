@@ -1,6 +1,6 @@
 import redis, json, os
 
-redis_host = os.environ["REDIS_HOST"]
+redis_host = "redis"  # docker alias
 redis = redis.StrictRedis(host=redis_host, port=6379, db=0, decode_responses=True)
 
 '''
@@ -126,3 +126,47 @@ class RedisGit:
     def get_runs(self):
         self.__reload()
         return self.__d['runs']
+
+
+class RedisId:
+    uid = None
+    __d = None
+
+    def __init__(self, id) -> None:
+        super().__init__()
+        self.uid = id
+
+    def __jsonify(self):
+        return json.dumps(self.__d)
+
+    def __reload(self):
+        v = redis.get("_" + self.uid)
+        self.__d = json.loads(v) if v else {}
+
+    def __store(self):
+        redis.set("_" + self.uid, self.__jsonify())
+
+    def set_status(self, status):
+        return self.set('status', status)
+
+    def set_message(self, message):
+        return self.set('message', message)
+
+    def get_status(self):
+        return self.get('status')
+
+    def get_message(self):
+        return self.get('message')
+
+    def set(self, key_or_dict, val=None):
+        self.__reload()
+        if val is None and key_or_dict is not None:
+            self.__d = key_or_dict
+        self.__store()
+        return self
+
+    def get(self, key=None):
+        self.__reload()
+        if key is None:
+            return self.__d
+        return self.__d[key] if key in self.__d.keys() else None

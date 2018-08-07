@@ -25,6 +25,9 @@ class ProgressPlugin:
         self.collected += 1
         self.rl.set_status("Collecting test items.. (" + str(self.collected) + ")", 40)
 
+    def pytest_cmdline_main(self, config):
+        print("Pytest is now executing the main commandline.")
+
     def pytest_collection_finish(self, session):
         self.total = len(session.items)
         self.rl.set_status("Collected " + str(self.total) + " tests.", 50)
@@ -60,26 +63,27 @@ class ProgressPlugin:
 
 async def run_tests(uid, path):
     rl = RedisRun(uid)
-    rl.set_status("Unpacking zip file..", 5)
-    dir = os.path.abspath(base_dir+uid+'/')
-    await asyncio.sleep(2)
-    if not os.path.exists(dir):
-        os.makedirs(dir)
-    with zipfile.ZipFile(path, "r") as zip:
-        #zip.extractall(dir)
-        # TODO: the following method eliminates all subdirectories, this needs to be reviewed
-        for member in zip.namelist():
-            filename = os.path.basename(member)
-            # skip directories
-            if not filename:
-                continue
+    if rl.get_status()['progress'] <= 20:
+        rl.set_status("Unpacking zip file..", 5)
+        dir = os.path.abspath(base_dir + uid + '/')
+        await asyncio.sleep(2)
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        with zipfile.ZipFile(path, "r") as zip:
+            # zip.extractall(dir)
+            # TODO: the following method eliminates all subdirectories, this needs to be reviewed
+            for member in zip.namelist():
+                filename = os.path.basename(member)
+                # skip directories
+                if not filename:
+                    continue
 
-            # copy file (taken from zipfile's extract)
-            source = zip.open(member)
-            target = open(os.path.join(dir, filename), "wb")
-            with source, target:
-                shutil.copyfileobj(source, target)
-        rl.set_status("Extracted " + str(len(zip.namelist())) + " file(s).", 10)
+                # copy file (taken from zipfile's extract)
+                source = zip.open(member)
+                target = open(os.path.join(dir, filename), "wb")
+                with source, target:
+                    shutil.copyfileobj(source, target)
+            rl.set_status("Extracted " + str(len(zip.namelist())) + " file(s).", 10)
     await asyncio.sleep(1)
     asyncio.ensure_future(__do_run(rl, uid))
 
@@ -99,3 +103,4 @@ async def __do_run(rl, uid):
                                                           'plugins': [pp]})
     # run in another thread or it blocks our eventloop
     thread.start()
+    print("Thread started. (" + repr(thread) + ')')
