@@ -110,9 +110,9 @@ async def git_runs(request, id):
     return response.json(RedisGit(id).get_runs())
 
 
-@app.route("/runs/<id>")
+@app.route("/results/<id>")
 async def run_result(request, id):
-    return response.json(RedisRun(id).get_result())
+    return response.json(RedisRun(id).get())
 
 
 @app.route("/commit/<id>")

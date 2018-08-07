@@ -116,4 +116,4 @@ async def run_after_checkout(id, run_uuid):
     RedisRun(run_uuid).set_status("Checked out git repository..", 20, 'running').set_path(os.path.abspath(base_dir +
                                                                                                           run_uuid +
                                                                                                           '/'))
-    # asyncio.ensure_future(test_runner.__do_run(rl, run_uid))
+    asyncio.ensure_future(test_runner.__do_run(run_uuid))

@@ -52,7 +52,7 @@ function doPoll() {
                     //    bar.set(response.data.progress / 100);
                 $("#message").text(response.data.message);
                 }
-                if(response.data.state !== "done")
+                if (response.data.status !== "success")
                 {
                     setTimeout(doPoll, 500);
                 } else {

@@ -98,6 +98,10 @@ class RedisRun:
         self.__reload()
         return self.__d['tests']
 
+    def get(self):
+        self.__reload()
+        return self.__d
+
 
 class RedisGit:
     uid = None

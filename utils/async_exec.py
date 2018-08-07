@@ -1,7 +1,6 @@
 import asyncio, uuid
 from concurrent.futures import ThreadPoolExecutor
 
-from utils import redis_layer
 from utils.redis_layer import RedisId
 
 process_pool = ThreadPoolExecutor(3)
@@ -14,7 +13,7 @@ async def subprocess_exec(args, id=None):
     else:
         exec_uuid = id
     print(exec_uuid + " : subprocess_exec(" + ' '.join(args) + ")")
-    r = RedisId(id).set_status('running').set_message(subprocess_exec(' '.join(args) + ")"))
+    r = RedisId(id).set_status('running').set_message("subprocess_exec(" + ' '.join(args) + ")")
     try:
         sout = serr = asyncio.subprocess.PIPE
         process = await asyncio.create_subprocess_exec(
@@ -35,15 +34,16 @@ async def subprocess_exec(args, id=None):
         return d
 
 
-async def thread_exec(target, args, kwargs):
+async def thread_exec(target, args=(), kwargs=None):
     exec_uuid = str(uuid.uuid1().hex)
     print(exec_uuid + " : thread_exec(" + ' '.join(args) + ' '.join(kwargs) + ")")
-    RedisId(exec_uuid).set_status('starting').set_message("thread_exec(" + ' '.join(kwargs) + ")")
+    RedisId(exec_uuid).set_status('starting').set_message("thread_exec(" + ' '.join(args) + ' '.join(kwargs) + ")")
     loop = asyncio.get_event_loop()
     asyncio.ensure_future(loop.run_in_executor(process_pool, __thread_exec_helper, *[target, args, kwargs, exec_uuid]))
     return exec_uuid
 
-def __thread_exec_helper(target, kwargs, args, exec_uuid):
+
+def __thread_exec_helper(target, args, kwargs, exec_uuid):
     print("hi")
     r = RedisId(exec_uuid).set_status('running')
     try:
@@ -51,7 +51,7 @@ def __thread_exec_helper(target, kwargs, args, exec_uuid):
             r.set_status('error').set_message('target is not callable: ' + str(type(target)))
             return
         r.set_message("thread_exec(..) calling target")
-        v = target(args, kwargs)
+        v = target(*args, **kwargs)
         r.set_message(" : target(..) finished.")
         r.set_status('success').set_message('target execution finished').set('return', repr(v))
     except Exception as e:

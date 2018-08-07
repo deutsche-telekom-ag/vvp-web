@@ -57,7 +57,7 @@ class ProgressPlugin:
                              self.calc_dur(report))
 
     def pytest_sessionfinish(self, session, exitstatus):
-        self.rl.set_status("Done!", 100, 'done')
+        self.rl.set_status("Done!", 100, 'success')
         self.outcome['total'] = self.total
         self.rl.set_result(self.outcome)
 
@@ -109,7 +109,7 @@ async def __do_run(uid):
                                                                                       '--template-directory=' + dir + '/',
                                                                                       '--html=' + dir + '/report.html',
                                                                                       '--self-contained-html'],
-                                                                             'plugins': [pp]}, args=[]))
+                                                                             'plugins': [pp]}))
     print("__do_run end")
     # run in another thread or it blocks our eventloop
     # thread.start()
