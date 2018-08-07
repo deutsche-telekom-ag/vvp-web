@@ -123,6 +123,12 @@ async def git_commit(request, id):
     return response.json(await checkout_repo(unique_id, id))
 
 
+@app.route("/repo/<id>")
+async def show_repo(request, id):
+    template = env.get_template('repo.html')
+    html = template.render()
+    return response.html(html)
+
 # debug-ish function
 @app.route("/uuid/<id>")
 async def get_uuid(request, id):

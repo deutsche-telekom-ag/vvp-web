@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block title %} VVP {% endblock %}
+{% block titlebar_title %}{% endblock %}
+{% block head %}
+    {{ super() }}
+    <style>
+        p {
+            padding-bottom: 0px;
+            padding-top: 0px;
+        }
+
+        p.text-xxlarge {
+            padding-bottom: 0px;
+            padding-top: 0px;
+        }
+
+        .enlarge {
+            transition: font-size 0.2s; /* Animation */
+        }
+
+        .enlarge:hover {
+            font-size: 60px;
+        }
+    </style>
+    <script src="/static/js/clipboard.min.js"></script>
+    <script src="/static/js/get_runs.js"></script>
+    <script>
+        $(function () {
+            // initialize clipboard copy
+            new ClipboardJS('.copy');
+            // initialize tooltips
+            $('[data-toggle="tooltip"]').tooltip()
+            // run get_runs() to initialize summary table
+            get_runs();
+        });
+    </script>
+{% endblock %}
+{% block body %}
+    <div class="site-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <h1 class="display-4">VNF Validation Project</h1>
+        <p class="lead">This is the overview for your repository.</p>
+    </div>
+    <div class="container">
+        <div class="card mb-4 box-shadow">
+            Hier kommt ein Graph hin
+        </div>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="..."
+                   value="" id="git_url_text_field"
+                   aria-label="git_url" aria-describedby="git_url" readonly="readonly"
+                   onClick="this.setSelectionRange(0, this.value.length)">
+            <div class="input-group-append">
+                <button class="btn btn-icon btn-primary btn-outline-primary magenta copy" type="button"
+                        data-clipboard-target="#git_url_text_field" id="button_git_url_copy"
+                        data-toggle="tooltip" data-placement="top" title="Copy to clipboard">
+                    <i class="icon icon-copy" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="input-group-append">
+                <button class="btn btn-icon btn-primary btn-outline-primary magenta copy" type="button"
+                        id="bookmark-this"
+                        data-toggle="tooltip" data-placement="top" title="Bookmark this page">
+                    <i class="icon icon-add" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card mb-4 box-shadow">
+            <div class="card-header text-center">
+                <h4 class="my-0 font-weight-normal">Summary</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-left" id="table_run_summary">
+                        <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">Commit</th>
+                            <th scope="col">Passed</th>
+                            <th scope="col">Skipped</th>
+                            <th scope="col">Failed</th>
+                        </tr>
+                        </thead>
+                        <tr></tr>
+                        <!-- Template for table design
+                        <tr>
+                            <td class="align-middle text-bold text-xxlarge">
+                                #1
+                            </td>
+                            <td class="align-middle">
+                                <a>aslkkfhsda</a>
+                            </td>
+                            <td class="text-success align-middle text-semibold text-xxlarge">
+                                14
+                            </td>
+                            <td class="text-warning align-middle text-semibold text-xxlarge">
+                                42
+                            </td>
+                            <td class="text-danger align-middle text-semibold text-xxlarge">
+                                78
+                            </td>
+                        </tr>
+                        -->
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        jQuery(function ($) {
+
+            $('#bookmark-this').click(function (e) {
+                var bookmarkURL = window.location.href;
+                var bookmarkTitle = document.title;
+
+                if ('addToHomescreen' in window && addToHomescreen.isCompatible) {
+                    // Mobile browsers
+                    addToHomescreen({autostart: false, startDelay: 0}).show(true);
+                } else if (window.sidebar && window.sidebar.addPanel) {
+                    // Firefox <=22
+                    window.sidebar.addPanel(bookmarkTitle, bookmarkURL, '');
+                } else if ((window.sidebar && /Firefox/i.test(navigator.userAgent)) || (window.opera && window.print)) {
+                    // Firefox 23+ and Opera <=14
+                    $(this).attr({
+                        href: bookmarkURL,
+                        title: bookmarkTitle,
+                        rel: 'sidebar'
+                    }).off(e);
+                    return true;
+                } else if (window.external && ('AddFavorite' in window.external)) {
+                    // IE Favorites
+                    window.external.AddFavorite(bookmarkURL, bookmarkTitle);
+                } else {
+                    // Other browsers (mainly WebKit & Blink - Safari, Chrome, Opera 15+)
+                    alert('Press ' + (/Mac/i.test(navigator.platform) ? 'Cmd' : 'Ctrl') + '+D to bookmark this page.');
+                }
+
+                return false;
+            });
+
+        });
+    </script>
+{% endblock %}

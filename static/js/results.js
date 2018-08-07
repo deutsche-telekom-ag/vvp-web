@@ -2,7 +2,7 @@ $(document).ready(function () {
     var total = parseInt($("#val-total").val());
     var pass = parseInt($("#val-pass").val());
     var skip = parseInt($("#val-skip").val());
-    var fail = parseInt($("#val-fail").val())
+    var fail = parseInt($("#val-fail").val());
 
 
     var bar1 = new ProgressBar.Circle("#circle-passed", {
