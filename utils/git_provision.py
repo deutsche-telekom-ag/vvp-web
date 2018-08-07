@@ -4,7 +4,7 @@ from uuid import UUID
 from pexpect import pxssh
 
 from utils import test_runner, async_exec, redis_layer
-from utils.redis_layer import RedisRun, RedisId
+from utils.redis_layer import RedisRun, RedisId, RedisGit
 
 base_dir = "tests/test"
 
@@ -89,6 +89,7 @@ async def checkout_repo(run_uuid, git_uuid):
                                                            "http://" + GIT_HOSTNAME + "/git/" + git_uuid,
                                                            base_dir + run_uuid], id=id))
     asyncio.ensure_future(run_after_checkout(id, run_uuid))
+    RedisGit(git_uuid).add_run(run_uuid)
     return {'status': 'created', 'uuid': id}
 
 
