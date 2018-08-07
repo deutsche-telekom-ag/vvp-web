@@ -38,8 +38,6 @@ services:
     networks:
       internal:
         ipv4_address: 10.11.0.20
-    environment:
-      - REDIS_HOST=10.11.0.20 #TODO: @vscharf - why?
     volumes:
       - ./redis:/data
 
