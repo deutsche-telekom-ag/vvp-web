@@ -67,6 +67,10 @@ def setup_commit_hook(uid):
                     'log': flog.getvalue().decode("utf-8")}
         s.sendline("cd " + uid + ".git/hooks")
         s.prompt()
+        # s.sendline("cat <<EOF > post-receive")
+        # s.sendline("wget 10.11.0.4:8913/commit/" + uid + " -qO- > /dev/null")
+        # s.sendline('echo "== vvp-web ==\n"')
+        # s.sendline('echo "')
         s.sendline("echo \"wget 10.11.0.4:8913/commit/" + uid + " -qO-\" > post-receive")
         s.prompt()
         s.sendline("chmod +x ./post-receive")
@@ -90,7 +94,7 @@ async def checkout_repo(run_uuid, git_uuid):
                                                            base_dir + run_uuid], id=id))
     asyncio.ensure_future(run_after_checkout(id, run_uuid))
     RedisGit(git_uuid).add_run(run_uuid)
-    return {'status': 'created', 'uuid': id}
+    return {'status': 'created', 'status_uuid': id, 'git_uuid': git_uuid, 'run_uuid': run_uuid}
 
 
 async def run_after_checkout(id, run_uuid):
@@ -115,5 +119,6 @@ async def run_after_checkout(id, run_uuid):
     print("Checkout finished, should start test run now.")
     RedisRun(run_uuid).set_status("Checked out git repository..", 20, 'running').set_path(os.path.abspath(base_dir +
                                                                                                           run_uuid +
-                                                                                                          '/'))
+                                                                                                          '/')).set(
+        'is_git', True)
     asyncio.ensure_future(test_runner.__do_run(run_uuid))

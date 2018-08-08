@@ -56,15 +56,22 @@ class ProgressPlugin:
             self.rl.add_test(os.path.basename(report.fspath), report.longreprtext, report.outcome,
                              self.calc_dur(report))
 
-    def pytest_sessionfinish(self, session, exitstatus):
-        self.rl.set_status("Done!", 100, 'success')
-        self.outcome['total'] = self.total
-        self.rl.set_result(self.outcome)
+        if self.ran >= self.total:
+            self.rl.set_status("Done!", 100, 'success')
+            self.outcome['total'] = self.total
+            self.rl.set_result(self.outcome)
+
+    # def pytest_sessionfinish(self, session, exitstatus):
+    #    self.rl.set_status("Done!", 100, 'success')
+    #    self.outcome['total'] = self.total
+    #    self.rl.set_result(self.outcome)
 
 
 async def run_tests(uid, path):
     rl = RedisRun(uid)
-    if rl.get_status()['progress'] > 20:
+    print("next with progress:" + str(rl.get_status()['progress']))
+    print(rl.get_status())
+    if rl.get_status()['progress'] > 20 or 'is_git' in rl.get_status():
         return
     elif rl.get_status()['progress'] <= 20:
         rl.set_status("Unpacking zip file..", 5)
@@ -87,6 +94,7 @@ async def run_tests(uid, path):
                 with source, target:
                     shutil.copyfileobj(source, target)
             rl.set_status("Extracted " + str(len(zip.namelist())) + " file(s).", 10)
+            rl.set_path(dir)
     await asyncio.sleep(1)
     asyncio.ensure_future(__do_run(uid))
 
@@ -99,12 +107,8 @@ async def __do_run(uid):
     pp = ProgressPlugin(rl, uid)
     # example:
     # pytest vvp-validation-scripts/ice_validator/ --tap-stream --template-directory=/home/nacho/clearwater-onap --html=report.html --self-contained-html
-    thread = threading.Thread(target=pytest.main, kwargs={'args': [abs_path, '-p', 'no:terminal',
-                                                                   '--template-directory=' + dir + '/',
-                                                                   '--html=' + dir + '/report.html',
-                                                                   '--self-contained-html'],
-                                                          'plugins': [pp]})
     print("Ensuring future of pytest.main..")
+    print("dir= " + dir)
     asyncio.ensure_future(async_exec.thread_exec(target=pytest.main, kwargs={'args': [abs_path, '-p', 'no:terminal',
                                                                                       '--template-directory=' + dir + '/',
                                                                                       '--html=' + dir + '/report.html',
