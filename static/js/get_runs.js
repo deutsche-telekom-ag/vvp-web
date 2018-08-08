@@ -7,7 +7,6 @@ function get_runs() {
             console.log(response);
             if (response.status === 200) {
                 let data = response.data;
-                let run_num = 0;
                 for (let key in data) {
                     console.log(key);
                     let run = data[key];
@@ -19,28 +18,29 @@ function get_runs() {
                             //handle success
                             console.log(response2);
                             if (response2.status === 200) {
-                                let items = [];
-                                //Iterate all td's in second column
-                                $('#table_run_summary tbody tr td:nth-child(1)').each(function () {
-                                    //add item to array
-                                    items.push($(this).text());
-                                });
-                                if (!items.includes(run_num)) {
-                                    run_num++;
-                                $("#table_run_summary").find('tbody').append("<tr>\n" +
+                                if ($("#" + run_id).length) {
+                                    $("#" + run_id + "_pass").html(response2.data.result.pass);
+                                    $("#" + run_id + "_skip").html(response2.data.result.skip);
+                                    $("#" + run_id + "_fail").html(response2.data.result.fail);
+                                } else {
+                                    $("#table_run_summary").find('tbody').append("<tr id=\"" +
+                                        run_id + "\">\n order" +
                                     "<td class=\"align-middle text-bold text-xxlarge\">" +
-                                    "#" + run_num +
+                                        "#" + key +
+                                        "<span class=\"js-secret-variables-save-loading-icon\" id=\"git_loading\" style=\"display: none;\">\n" +
+                                        "<i aria-hidden=\"true\" data-hidden=\"true\" class=\"fa fa-refresh fa-spin\"></i>\n" +
+                                        "</span>" +
                                     "</td>" +
                                     "<td class=\"align-middle\">" +
                                     "<a>" + commit_hash + "</a>" +
                                     "</td>" +
-                                    "<td class=\"text-success align-middle text-semibold text-xxlarge\">" +
+                                        "<td class=\"text-success align-middle text-semibold text-xxlarge\" id=\"" + run_id + "_pass\">" +
                                     response2.data.result.pass +
                                     "</td>" +
-                                    "<td class=\"text-warning align-middle text-semibold text-xxlarge\">" +
+                                        "<td class=\"text-warning align-middle text-semibold text-xxlarge\" id=\"" + run_id + "_skip\">" +
                                     response2.data.result.skip +
                                     "</td>" +
-                                    "<td class=\"text-danger align-middle text-semibold text-xxlarge\">" +
+                                        "<td class=\"text-danger align-middle text-semibold text-xxlarge\" id=\"" + run_id + "_skip\">" +
                                     response2.data.result.fail +
                                     "</td>" +
                                     "</tr>");
