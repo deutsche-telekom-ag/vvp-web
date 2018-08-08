@@ -1,6 +1,6 @@
 function get_runs() {
     let repo = window.location.pathname;
-    repo = repo.replace("/repo", "");
+    repo = repo.replace("/repo/", "");
     axios.get('/runs/' + repo)
         .then(function (response) {
             // handle success
