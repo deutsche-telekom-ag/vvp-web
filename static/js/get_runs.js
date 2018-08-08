@@ -1,6 +1,6 @@
 function get_runs() {
     let repo = window.location.pathname;
-    repo = repo.replace("/repo", "");
+    repo = repo.replace("/repo/", "");
     axios.get('/runs/' + repo)
         .then(function (response) {
             // handle success
@@ -19,7 +19,14 @@ function get_runs() {
                             //handle success
                             console.log(response2);
                             if (response2.status === 200) {
-                                run_num++;
+                                let items = [];
+                                //Iterate all td's in second column
+                                $('#table_run_summary tbody tr td:nth-child(1)').each(function () {
+                                    //add item to array
+                                    items.push($(this).text());
+                                });
+                                if (!items.includes(run_num)) {
+                                    run_num++;
                                 $("#table_run_summary").find('tbody').append("<tr>\n" +
                                     "<td class=\"align-middle text-bold text-xxlarge\">" +
                                     "#" + run_num +
@@ -37,9 +44,11 @@ function get_runs() {
                                     response2.data.result.fail +
                                     "</td>" +
                                     "</tr>");
+                                }
                             }
                         })
                 }
+                setTimeout(get_runs, 2000);
             }
         })
         .catch(function (error) {
