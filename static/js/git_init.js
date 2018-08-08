@@ -26,7 +26,13 @@ function git_init() {
 
                         enable($("#button_git_url_copy"));
                         enable($("#git_url_text_field"));
+
+                        //quoted function is ugly but causes the function not to be executed immediately.
+                        setTimeout(function () {
+                            wait_for_commit(git_repo_uid)
+                        }, 2000);
                     } else {
+                        $git_url_field.val("Sorry, an error occured. Please use the upload feature instead.");
                         // do nothing;
                     }
                 }
@@ -40,4 +46,30 @@ function git_init() {
                 $("#git_loading").hide();
             });
     }
+}
+
+function wait_for_commit(git_repo_uid) {
+    console.log("waiting for commit..");
+    if (git_repo_uid === false)
+        return false;
+
+    axios.get('/runs/' + git_repo_uid)
+        .then(function (response) {
+                console.log(response);
+                if (response.status === 200) {
+                    if ('0' in response.data) {
+                        setTimeout(function () {
+                            window.location = '/repo/' + git_repo_uid;
+                        }, 1000);
+                    }
+                    else {
+                        setTimeout(function () {
+                            wait_for_commit(git_repo_uid)
+                        }, 2000);
+                    }
+                }
+            }
+        ).catch(function (error) {
+        console.log(error);
+    });
 }
