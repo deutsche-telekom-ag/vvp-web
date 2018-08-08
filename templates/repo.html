@@ -22,6 +22,7 @@
             font-size: 60px;
         }
     </style>
+    <script src="/static/js/Chart.bundle.min.js"></script>
     <script src="/static/js/clipboard.min.js"></script>
     <script src="/static/js/get_runs.js"></script>
     <script>
@@ -29,7 +30,7 @@
             // initialize clipboard copy
             new ClipboardJS('.copy');
             // initialize tooltips
-            $('[data-toggle="tooltip"]').tooltip()
+            $('[data-toggle="tooltip"]').tooltip();
             // run get_runs() to initialize summary table
             get_runs();
         });
@@ -41,8 +42,8 @@
         <p class="lead">This is the overview for your repository.</p>
     </div>
     <div class="container">
-        <div class="card mb-4 box-shadow">
-            Hier kommt ein Graph hin
+        <div class="card mb-4 box-shadow" style="display: block;">
+            <canvas id="repochart" width="100%" height="350"></canvas>
         </div>
         <div class="input-group mb-3">
             <input type="text" class="form-control" placeholder="..."
@@ -139,4 +140,5 @@
 
         });
     </script>
+    <script src="/static/js/custom_chart.js"></script>
 {% endblock %}
