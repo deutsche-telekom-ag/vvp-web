@@ -4,7 +4,6 @@ $(document).ready(function () {
     var skip = parseInt($("#val-skip").val());
     var fail = parseInt($("#val-fail").val());
 
-
     var bar1 = new ProgressBar.Circle("#circle-passed", {
         color: '#fffff',
         strokeWidth: 4,
