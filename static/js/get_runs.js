@@ -25,28 +25,31 @@ function get_runs() {
                                 } else {
                                     $("#table_run_summary").find('tbody').append("<tr id=\"" +
                                         run_id + "\">\n order" +
-                                    "<td class=\"align-middle text-bold text-xxlarge\">" +
+                                        "<td class=\"align-middle text-bold text-xxlarge\">" +
                                         "#" + key +
                                         "<span class=\"js-secret-variables-save-loading-icon\" id=\"git_loading\" style=\"display: none;\">\n" +
                                         "<i aria-hidden=\"true\" data-hidden=\"true\" class=\"fa fa-refresh fa-spin\"></i>\n" +
                                         "</span>" +
-                                    "</td>" +
-                                    "<td class=\"align-middle\">" +
-                                    "<a>" + commit_hash + "</a>" +
-                                    "</td>" +
+                                        "</td>" +
+                                        "<td class=\"align-middle\">" +
+                                        "<a>" + commit_hash + "</a>" +
+                                        "</td>" +
                                         "<td class=\"text-success align-middle text-semibold text-xxlarge\" id=\"" + run_id + "_pass\">" +
-                                    response2.data.result.pass +
-                                    "</td>" +
+                                        response2.data.result.pass +
+                                        "</td>" +
                                         "<td class=\"text-warning align-middle text-semibold text-xxlarge\" id=\"" + run_id + "_skip\">" +
-                                    response2.data.result.skip +
-                                    "</td>" +
-                                        "<td class=\"text-danger align-middle text-semibold text-xxlarge\" id=\"" + run_id + "_skip\">" +
-                                    response2.data.result.fail +
-                                    "</td>" +
-                                    "</tr>");
+                                        response2.data.result.skip +
+                                        "</td>" +
+                                        "<td class=\"text-danger align-middle text-semibold text-xxlarge\" id=\"" + run_id + "_fail\">" +
+                                        response2.data.result.fail +
+                                        "</td>" +
+                                        "</tr>");
                                 }
                             }
                         })
+                    $('#table_run_summary').DataTable({
+                        "order": [[1, "desc"]]
+                    });
                 }
                 setTimeout(get_runs, 2000);
             }
