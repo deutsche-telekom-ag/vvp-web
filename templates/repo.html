@@ -31,7 +31,9 @@
             // initialize tooltips
             $('[data-toggle="tooltip"]').tooltip();
             // run get_runs() to initialize summary table
-            get_history();
+            window.setInterval(function () {
+                get_history();
+            }, 5000);
         });
     </script>
 {% endblock %}
