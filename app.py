@@ -65,10 +65,31 @@ async def process_heat(request, uuid):
 @app.route("/status/<uuid>", methods=['GET'])
 async def return_status(request, uuid):
     status = RedisRun(uuid).get_status()
-    print(status)
     if not status:
         return response.json(False, 500)
     return response.json(status)
+
+
+@app.route("/status/<uuid>/full", methods=['GET'])
+async def return_status(request, uuid):
+    status = RedisRun(uuid).get()
+    if not status:
+        return response.json(False, 500)
+    return response.json(status)
+
+
+@app.route("/status/<uuid>/slim", methods=['GET'])
+async def return_status(request, uuid):
+    run = RedisRun(uuid)
+    d = {
+        'uid': uuid,
+        'status': run.get_status()['state'],
+        'commit': run.get()['commit_hash'],
+        'result': run.get_result()
+    }
+    if not d:
+        return response.json(False, 500)
+    return response.json(d)
 
 
 @app.route("/result/<uuid>", methods=['GET', 'POST'])
@@ -105,10 +126,25 @@ async def git_init(request):
     return response.json(v)
 
 
+# legacy, use /history/
 @app.route("/runs/<id>")
 async def git_runs(request, id):
     return response.json(RedisGit(id).get_runs())
 
+
+@app.route("/history/<id>")
+async def git_history(request, id):
+    runs = RedisGit(id).get_runs()
+    d = {}
+    for c, (no, uid) in enumerate(runs.items()):
+        run = RedisRun(uid)
+        d[c] = {
+            'uid': uid,
+            'status': run.get_status()['state'],
+            'commit': run.get()['commit_hash'],
+            'result': run.get_result()
+        }
+    return response.json(d)
 
 @app.route("/results/<id>")
 async def run_result(request, id):

@@ -41,7 +41,7 @@ class RedisRun:
                         'status': {
                             'message': "unknown run uuid",
                             'progress': 0,
-                            'state': "fail",
+                            'state': "error",
                         },
                         'result': {
                             'pass': 0,

@@ -116,9 +116,20 @@ async def run_after_checkout(id, run_uuid):
         RedisRun(run_uuid).set_status("Git checkout failed.", 100, 'error')
         return
     # checkout succeeded, start test run now
-    print("Checkout finished, should start test run now.")
-    RedisRun(run_uuid).set_status("Checked out git repository..", 20, 'running').set_path(os.path.abspath(base_dir +
-                                                                                                          run_uuid +
-                                                                                                          '/')).set(
-        'is_git', True)
+    print("Clone finished, getting latest commit hash..")
+    p = os.path.abspath(base_dir + run_uuid + '/')
+    try:
+        d = await async_exec.subprocess_exec(args=["git", "--git-dir=" + p + "/.git", "rev-parse", "--short", "HEAD"],
+                                             id="testing_git_commit")
+        assert type(d) is dict
+        if d['status'] is 'success':
+            RedisRun(run_uuid).set('commit_hash', d['stdout'])
+        else:
+            RedisRun(run_uuid).set_status("Could not get commit hash!", 100, 'error')
+    except Exception as e:
+        RedisRun(run_uuid).set_status("Exception occurred while trying to get commit hash! (%s)" % repr(e), 100,
+                                      'error')
+        return
+    print("Clone finished, should start test run now.")
+    RedisRun(run_uuid).set_status("Cloned git repository..", 20, 'running').set_path(p).set('is_git', True)
     asyncio.ensure_future(test_runner.__do_run(run_uuid))
