@@ -1,6 +1,6 @@
 import redis, json, os
 
-redis_host = os.environ["REDIS_HOST"]
+redis_host = "redis"  # docker alias
 redis = redis.StrictRedis(host=redis_host, port=6379, db=0, decode_responses=True)
 
 '''
@@ -41,7 +41,7 @@ class RedisRun:
                         'status': {
                             'message': "unknown run uuid",
                             'progress': 0,
-                            'state': "fail",
+                            'state': "error",
                         },
                         'result': {
                             'pass': 0,
@@ -68,7 +68,7 @@ class RedisRun:
         #print("get path: " + repr(self.__d))
         return self.__d['path']
 
-    def set_status(self, message="", progress=0, state="running"):
+    def set_status(self, message="", progress=0, state="running", ):
         self.__reload()
         self.__d['status'] = {'message': message, 'progress': progress, 'state': state}
         self.__store()
@@ -98,6 +98,16 @@ class RedisRun:
         self.__reload()
         return self.__d['tests']
 
+    def get(self):
+        self.__reload()
+        return self.__d
+
+    def set(self, key, val):
+        self.__reload()
+        self.__d[key] = val
+        self.__store()
+        return self
+
 
 class RedisGit:
     uid = None
@@ -126,3 +136,49 @@ class RedisGit:
     def get_runs(self):
         self.__reload()
         return self.__d['runs']
+
+
+class RedisId:
+    uid = None
+    __d = None
+
+    def __init__(self, id) -> None:
+        super().__init__()
+        self.uid = id
+
+    def __jsonify(self):
+        return json.dumps(self.__d)
+
+    def __reload(self):
+        v = redis.get("_" + self.uid)
+        self.__d = json.loads(v) if v else {}
+
+    def __store(self):
+        redis.set("_" + self.uid, self.__jsonify())
+
+    def set_status(self, status):
+        return self.set('status', status)
+
+    def set_message(self, message):
+        return self.set('message', message)
+
+    def get_status(self):
+        return self.get('status')
+
+    def get_message(self):
+        return self.get('message')
+
+    def set(self, key_or_dict, val=None):
+        self.__reload()
+        if val is None and key_or_dict is not None:
+            self.__d = key_or_dict
+        else:
+            self.__d[key_or_dict] = val
+        self.__store()
+        return self
+
+    def get(self, key=None):
+        self.__reload()
+        if key is None:
+            return self.__d
+        return self.__d[key] if key in self.__d.keys() else None
