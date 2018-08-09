@@ -8,9 +8,10 @@ from utils.redis_layer import RedisRun, RedisId, RedisGit
 
 base_dir = "tests/test"
 
-GIT_HOSTNAME = "10.11.0.3"
-GIT_USERNAME = "root"
-GIT_PASSWORD = "git_sshd"
+GIT_HOSTNAME = "git-http"  # docker alias
+SSH_HOSTNAME = "ssh-daemon"  # docker alias
+SSH_USERNAME = "root"
+SSH_PASSWORD = "git_sshd"
 
 
 def create_repo():
@@ -27,7 +28,7 @@ def setup_repo():
     try:
         s = pxssh.pxssh()
         s.logfile = flog
-        s.login(GIT_HOSTNAME, GIT_USERNAME, GIT_PASSWORD)
+        s.login(SSH_HOSTNAME, SSH_USERNAME, SSH_PASSWORD)
         s.sendline("cd /git")
         s.prompt()
         s.sendline("mkdir " + uid + ".git")
@@ -56,7 +57,7 @@ def setup_commit_hook(uid):
             raise ValueError
         s = pxssh.pxssh()
         s.logfile = flog
-        s.login(GIT_HOSTNAME, GIT_USERNAME, GIT_PASSWORD)
+        s.login(SSH_HOSTNAME, SSH_USERNAME, SSH_PASSWORD)
         s.sendline("cd /git")
         s.prompt()
         s.sendline("if [ -d \"./" + uid + ".git\" ]; then echo DIR_OKAY; fi")
@@ -71,7 +72,7 @@ def setup_commit_hook(uid):
         # s.sendline("wget 10.11.0.4:8913/commit/" + uid + " -qO- > /dev/null")
         # s.sendline('echo "== vvp-web ==\n"')
         # s.sendline('echo "')
-        s.sendline("echo \"wget 10.11.0.4:8913/commit/" + uid + " -qO-\" > post-receive")
+        s.sendline("echo \"wget vvp-web:8913/commit/" + uid + " -qO-\" > post-receive")
         s.prompt()
         s.sendline("chmod +x ./post-receive")
         s.prompt()

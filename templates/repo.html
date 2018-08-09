@@ -23,16 +23,15 @@
         }
     </style>
     <script src="/static/js/clipboard.min.js"></script>
-    <script src="/static/js/sort_table.js"></script>
-    <script src="/static/js/get_runs.js"></script>
+    <script src="/static/js/get_history.js"></script>
     <script>
         $(function () {
             // initialize clipboard copy
             new ClipboardJS('.copy');
             // initialize tooltips
-            $('[data-toggle="tooltip"]').tooltip()
+            $('[data-toggle="tooltip"]').tooltip();
             // run get_runs() to initialize summary table
-            get_runs();
+            get_history();
         });
     </script>
 {% endblock %}
@@ -71,7 +70,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-left" id="table_run_summary">
+                    <table class="table table-left" id="history_table">
                         <thead>
                         <tr>
                             <th scope="col"></th>
@@ -81,7 +80,7 @@
                             <th scope="col">Failed</th>
                         </tr>
                         </thead>
-                        <tr></tr>
+                        <tbody></tbody>
                         <!-- Template for table design
                         <tr>
                             <td class="align-middle text-bold text-xxlarge">
