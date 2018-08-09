@@ -17,6 +17,7 @@ upload_dir = "./uploads"
 git_repo_dir = "./git"
 app.static('/static', './static')
 
+base_url = "https://he.v4.nu:8914/"  # should probably be set using env variables later on
 
 @app.route('/')
 async def index(request):
@@ -151,12 +152,16 @@ async def run_result(request, id):
     return response.json(RedisRun(id).get())
 
 
+# This response is shown in the users git client!
 @app.route("/commit/<id>")
 async def git_commit(request, id):
     print("New commit in repo: " + id)
     unique_id = str(uuid.uuid4())
     print("Generated uuid for run: " + unique_id)
-    return response.json(await checkout_repo(unique_id, id))
+    d = await checkout_repo(unique_id, id)
+    return response.text("== vvp-web ==\n\nYour commit is now being processed.\nPlease visit " + base_url + "repo/" +
+                         id + " for an overview of all test runs, or " + base_url + "next/" + unique_id +
+                         " to follow up with the progress of the current test run.")
 
 
 # debug-ish function
