@@ -16,6 +16,7 @@ env = Environment(loader=PackageLoader('app', 'templates'), trim_blocks=True)
 upload_dir = "./uploads"
 git_repo_dir = "./git"
 app.static('/static', './static')
+app.static('/favicon.ico', './static/favicon.ico')
 
 base_url = "https://he.v4.nu:8914/"  # should probably be set using env variables later on
 
