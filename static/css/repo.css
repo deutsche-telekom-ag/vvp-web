@@ -19,3 +19,7 @@ p.text-xxlarge {
 .fa-refresh {
     color: #e20074;
 }
+
+tbody tr {
+    cursor: pointer;
+}
