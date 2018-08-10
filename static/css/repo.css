@@ -1,0 +1,21 @@
+p {
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+p.text-xxlarge {
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+.enlarge {
+    transition: font-size 0.2s; /* Animation */
+}
+
+.enlarge:hover {
+    font-size: 60px;
+}
+
+.fa-refresh {
+    color: #e20074;
+}

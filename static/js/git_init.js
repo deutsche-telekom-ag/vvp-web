@@ -32,7 +32,7 @@ function git_init() {
                             wait_for_commit(git_repo_uid)
                         }, 2000);
                     } else {
-                        $git_url_field.val("Sorry, an error occured. Please use the upload feature instead.");
+                        $("#git_url_text_field").val("Sorry, an error occured. Please use the upload feature instead.");
                         // do nothing;
                     }
                 }
