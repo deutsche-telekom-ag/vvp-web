@@ -69,11 +69,9 @@ class ProgressPlugin:
 
 async def run_tests(uid, path):
     rl = RedisRun(uid)
-    print("next with progress:" + str(rl.get_status()['progress']))
-    print(rl.get_status())
-    if rl.get_status()['progress'] > 20 or 'is_git' in rl.get_status():
-        return
-    elif rl.get_status()['progress'] <= 20:
+    if rl.get_status()['progress'] > 20 or 'is_git' in rl.get():
+        return False
+    elif rl.get_status()['progress'] <= 20 and 'is_git' not in rl.get():
         rl.set_status("Unpacking zip file..", 5)
         dir = os.path.abspath(base_dir + uid + '/')
         await asyncio.sleep(2)

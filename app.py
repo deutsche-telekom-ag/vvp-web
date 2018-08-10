@@ -20,6 +20,7 @@ app.static('/favicon.ico', './static/favicon.ico')
 
 base_url = "https://he.v4.nu:8914/"  # should probably be set using env variables later on
 
+
 @app.route('/')
 async def index(request):
     template = env.get_template('index.html')
@@ -54,10 +55,10 @@ async def process_heat(request, uuid):
     path = rl.get_path()
     if path:
         path = os.path.abspath(path)
-        print(path)
-        rl.set_status("Starting test run..", 1, "running")
-        # TODO: Maybe take path out of this later on as its not required
-        asyncio.ensure_future(test_runner.run_tests(uuid, path))
+        if rl.get_status()['progress'] <= 20 and 'is_git' not in rl.get():
+            rl.set_status("Starting test run..", 1, "running")
+            # TODO: Maybe take path out of this later on as its not required
+            asyncio.ensure_future(test_runner.run_tests(uuid, path))
     else:
         return response.html(env.get_template('error.html').render(
             error="Could not find (path for) uuid. (status=" + rl.get_status() + ")"))
