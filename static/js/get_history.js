@@ -1,16 +1,4 @@
 var run_history;
-let repo_summary = {
-    0: {
-        'uid': '12345',
-        'status': 'running/success/error',
-        'commit': 'hash',
-        'result': {
-            'pass': 31,
-            'skip': 1,
-            'fail': 25,
-        },
-    }
-};
 
 class Run {
     constructor(id, run_data) {
