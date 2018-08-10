@@ -12,18 +12,25 @@ class Run {
     }
 
     update_html() {
-        $(this.node).find(this.uid + "_pass").html(this.result.pass);
-        $(this.node).find(this.uid + "_pass").html(this.result.skip);
-        $(this.node).find(this.uid + "_pass").html(this.result.fail);
+        this.node.find("#" + this.uid + "_pass").html(this.result.pass);
+        this.node.find("#" + this.uid + "_skip").html(this.result.skip);
+        this.node.find("#" + this.uid + "_fail").html(this.result.fail);
+        if (!this.running)
+            this.node.find("#" + this.uid + "_running").hide();
         return this.node;
     }
 
     create_html() {
-        return $("<tr id=\"" +
+        let html = "<tr id=\"" +
             this.uid + "\">\n" +
             "<td class=\"align-middle text-bold text-xxlarge\">" +
-            "#" + this.id +
-            "<span class=\"js-secret-variables-save-loading-icon\" id=\"git_loading\" style=\"display: none;\">\n" +
+            "#" + this.id + "</td>" +
+            "<td class=\"align-middle text-smibold text-xlarge\">" +
+            "<span class=\"js-secret-variables-save-loading-icon text-xlarge\" id=\"" + this.uid + "_running\"";
+        if (!this.running)
+            html = html + " style=\"display: none;\"";
+        html = html +
+            ">\n" +
             "<i aria-hidden=\"true\" data-hidden=\"true\" class=\"fa fa-refresh fa-spin\"></i>\n" +
             "</span>" +
             "</td>" +
@@ -39,7 +46,8 @@ class Run {
             "<td class=\"text-danger align-middle text-semibold text-xxlarge\" id=\"" + this.uid + "_fail\">" +
             this.result.fail +
             "</td>" +
-            "</tr>");
+            "</tr>";
+        return $(html);
     }
 
     update_run(run_data) {
@@ -59,12 +67,9 @@ class History {
         this.active_runs = [];
         for (let run in history_data) {
             this.runs[run] = new Run(run, history_data[run]);
-            if (this.runs[run].running) {
-                // do nothing
-            } else {
+            if (this.runs[run].running)
                 // add to set of active runs
-                this.active_runs.push(this.runs[run]);
-            }
+                this.active_runs[run] = this.runs[run];
         }
     }
 
@@ -83,8 +88,8 @@ class History {
     }
 
     update_html() {
-        for (let run in this.runs) {
-            if ($("#" + this.runs[run].uid).length > 0)
+        for (let run in this.active_runs) {
+            if ($("#" + this.runs[run].uid).length)
                 $("#" + this.runs[run].uid).replaceWith(this.runs[run].update_html());
             else
                 this.runs[run].update_html().insertAfter($("#" + this.runs[run - 1].uid));
@@ -95,7 +100,7 @@ class History {
         for (let run in new_history) {
             if (this.runs[run].running && new_history[run].status !== "running") {
                 // remove from active runs set
-                this.active_runs.remove(this.runs[run]);
+                this.active_runs.remove_run_from_active(run);
             }
             // update run data
             this.runs[run].update_run(new_history[run]);
@@ -114,16 +119,19 @@ class History {
     }
 
     call_runs(response, run) {
+        console.log(response);
         if (typeof this.runs[run] === 'undefined') {
             this.runs[run] = new Run(run, response.data);
+            if (this.runs[run].running)
+                this.active_runs[run] = this.runs[run];
             this.update_html();
         } else {
+            this.runs[run].update_run(response.data);
+            this.update_html();
             if (this.runs[run].running && response.data.status !== "running") {
                 // remove from active runs set
                 this.remove_run_from_active(this.runs[run].uid);
             }
-            this.runs[run].update_run(response.data);
-            this.update_html();
         }
     }
 

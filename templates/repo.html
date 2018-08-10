@@ -3,6 +3,7 @@
 {% block titlebar_title %}{% endblock %}
 {% block head %}
     {{ super() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         p {
             padding-bottom: 0px;
@@ -20,6 +21,10 @@
 
         .enlarge:hover {
             font-size: 60px;
+        }
+
+        .fa-refresh {
+            color: #e20074;
         }
     </style>
     <script src="/static/js/clipboard.min.js"></script>
@@ -75,11 +80,12 @@
                     <table class="table table-left" id="history_table">
                         <thead>
                         <tr>
-                            <th scope="col"></th>
-                            <th scope="col">Commit</th>
-                            <th scope="col">Passed</th>
-                            <th scope="col">Skipped</th>
-                            <th scope="col">Failed</th>
+                            <th scope="col" style="width: 1px; white-space: nowrap;"></th>
+                            <th scope="col" style="width: 50px; white-space: nowrap;"></th>
+                            <th scope="col" style="width: 1px; white-space: nowrap;">Commit</th>
+                            <th scope="col" style="width: 1px; white-space: nowrap;">Passed</th>
+                            <th scope="col" style="width: 1px; white-space: nowrap;">Skipped</th>
+                            <th scope="col" style="width: 1px; white-space: nowrap;">Failed</th>
                         </tr>
                         </thead>
                         <tbody></tbody>
