@@ -26,9 +26,6 @@ class ProgressPlugin:
         self.collected += 1
         self.rl.set_status("Collecting test items.. (" + str(self.collected) + ")", 40)
 
-    def pytest_cmdline_main(self, config):
-        print("Pytest is now executing the main commandline.")
-
     def pytest_collection_finish(self, session):
         self.total = len(session.items)
         self.rl.set_status("Collected " + str(self.total) + " tests.", 50)
@@ -56,11 +53,14 @@ class ProgressPlugin:
             self.rl.add_test(os.path.basename(report.fspath), report.longreprtext, report.outcome,
                              self.calc_dur(report))
 
+        # update outcome with every test so it can be displayed on the repo page..
+        self.outcome['total'] = self.total
+        self.rl.set_result(self.outcome)
+
         if self.ran >= self.total:
             self.rl.set_status("Done!", 100, 'success')
-            self.outcome['total'] = self.total
-            self.rl.set_result(self.outcome)
 
+    # stopped working, should probably be fixed sometime..
     # def pytest_sessionfinish(self, session, exitstatus):
     #    self.rl.set_status("Done!", 100, 'success')
     #    self.outcome['total'] = self.total
