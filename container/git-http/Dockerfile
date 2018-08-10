@@ -18,7 +18,6 @@ ADD git-smarthttp.conf /etc/nginx/conf.d/5-git-smarthttp.conf
 VOLUME /git
 VOLUME ["/var/cache/nginx"]
 
-RUN mkdir /var/run/sshd
 RUN sed -i 's/^\(user .*\)$/user root;/' /etc/nginx/nginx.conf
 #allow unauthenticated pushes
 RUN git config --system http.receivepack true

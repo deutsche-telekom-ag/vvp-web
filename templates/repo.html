@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% block title %} VVP {% endblock %}
+{% block titlebar_title %}{% endblock %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        p {
+            padding-bottom: 0px;
+            padding-top: 0px;
+        }
+
+        p.text-xxlarge {
+            padding-bottom: 0px;
+            padding-top: 0px;
+        }
+
+        .enlarge {
+            transition: font-size 0.2s; /* Animation */
+        }
+
+        .enlarge:hover {
+            font-size: 60px;
+        }
+
+        .fa-refresh {
+            color: #e20074;
+        }
+    </style>
+    <script src="/static/js/clipboard.min.js"></script>
+    <script src="/static/js/get_history.js"></script>
+    <script>
+        $(function () {
+            // initialize clipboard copy
+            new ClipboardJS('.copy');
+            // initialize tooltips
+            $('[data-toggle="tooltip"]').tooltip();
+            // run get_runs() to initialize summary table
+            window.setInterval(function () {
+                get_history();
+            }, 5000);
+        });
+    </script>
+{% endblock %}
+{% block body %}
+    <div class="site-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <h1 class="display-4">VNF Validation Project</h1>
+        <p class="lead">This is the overview for your repository.</p>
+    </div>
+    <div class="container">
+        <div class="card mb-4 box-shadow">
+            Hier kommt ein Graph hin
+        </div>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="..."
+                   value="" id="git_url_text_field"
+                   aria-label="git_url" aria-describedby="git_url" readonly="readonly"
+                   onClick="this.setSelectionRange(0, this.value.length)">
+            <div class="input-group-append">
+                <button class="btn btn-icon btn-primary btn-outline-primary magenta copy" type="button"
+                        data-clipboard-target="#git_url_text_field" id="button_git_url_copy"
+                        data-toggle="tooltip" data-placement="top" title="Copy to clipboard">
+                    <i class="icon icon-copy" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="input-group-append">
+                <button class="btn btn-icon btn-primary btn-outline-primary magenta copy" type="button"
+                        id="bookmark-this"
+                        data-toggle="tooltip" data-placement="top" title="Bookmark this page">
+                    <i class="icon icon-add" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card mb-4 box-shadow">
+            <div class="card-header text-center">
+                <h4 class="my-0 font-weight-normal">Summary</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-left" id="history_table">
+                        <thead>
+                        <tr>
+                            <th scope="col" style="width: 1px; white-space: nowrap;"></th>
+                            <th scope="col" style="width: 50px; white-space: nowrap;"></th>
+                            <th scope="col" style="width: 1px; white-space: nowrap;">Commit</th>
+                            <th scope="col" style="width: 1px; white-space: nowrap;">Passed</th>
+                            <th scope="col" style="width: 1px; white-space: nowrap;">Skipped</th>
+                            <th scope="col" style="width: 1px; white-space: nowrap;">Failed</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <!-- Template for table design
+                        <tr>
+                            <td class="align-middle text-bold text-xxlarge">
+                                #1
+                            </td>
+                            <td class="align-middle">
+                                <a>aslkkfhsda</a>
+                            </td>
+                            <td class="text-success align-middle text-semibold text-xxlarge">
+                                14
+                            </td>
+                            <td class="text-warning align-middle text-semibold text-xxlarge">
+                                42
+                            </td>
+                            <td class="text-danger align-middle text-semibold text-xxlarge">
+                                78
+                            </td>
+                        </tr>
+                        -->
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        jQuery(function ($) {
+
+            $('#bookmark-this').click(function (e) {
+                var bookmarkURL = window.location.href;
+                var bookmarkTitle = document.title;
+
+                if ('addToHomescreen' in window && addToHomescreen.isCompatible) {
+                    // Mobile browsers
+                    addToHomescreen({autostart: false, startDelay: 0}).show(true);
+                } else if (window.sidebar && window.sidebar.addPanel) {
+                    // Firefox <=22
+                    window.sidebar.addPanel(bookmarkTitle, bookmarkURL, '');
+                } else if ((window.sidebar && /Firefox/i.test(navigator.userAgent)) || (window.opera && window.print)) {
+                    // Firefox 23+ and Opera <=14
+                    $(this).attr({
+                        href: bookmarkURL,
+                        title: bookmarkTitle,
+                        rel: 'sidebar'
+                    }).off(e);
+                    return true;
+                } else if (window.external && ('AddFavorite' in window.external)) {
+                    // IE Favorites
+                    window.external.AddFavorite(bookmarkURL, bookmarkTitle);
+                } else {
+                    // Other browsers (mainly WebKit & Blink - Safari, Chrome, Opera 15+)
+                    alert('Press ' + (/Mac/i.test(navigator.platform) ? 'Cmd' : 'Ctrl') + '+D to bookmark this page.');
+                }
+
+                return false;
+            });
+
+        });
+    </script>
+{% endblock %}
