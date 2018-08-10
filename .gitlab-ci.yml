@@ -21,13 +21,31 @@ build_image:
   script:
     - docker-compose build
 
-deploy_staging:
+deploy_live:
   variables:
     SSH_USER: gitlab
   stage: deploy
+  only:
+    - master
   image: ubuntu:18.04
   before_script:
     - apt-get update -qqy && apt-get install expect -qqy
+    - apt-get install openvpn screen iputils-ping -qqy
+    - echo $OVPN_CONFIG | base64 -d > ~/gitlab-runner.ovpn
+
+    # run openvpn in background
+    - screen -d -m -S bukkit bash -c 'openvpn --config ~/gitlab-runner.ovpn'
+    # mae sure openvpn is up and running and all interfaces are created
+    - sleep 1m
+    # add routes and print setup
+    - export VPN_GATEWAY=$(ip addr show tun0 | awk '/inet / {gsub(/\/.*/,"",$2); print $4}' | cut -d "/" -f1)
+    - ip route add 10.8.0.0/24 via $(echo $VPN_GATEWAY) dev tun0
+    - ip r
+    - ip addr
+    # wait until $LIVE_URL is reachable
+    - until ping -c1 $(echo $LIVE_URL) &>/dev/null; do :; done
+
+    # connect to host
     - 'which ssh-agent || ( apt-get install openssh-client -qqy )'
     ##
     ## Create the SSH directory and give it the right permissions
@@ -44,16 +62,15 @@ deploy_staging:
     ## https://gitlab.com/gitlab-examples/ssh-private-key/issues/1#note_48526556
     ##
     #- echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-    - echo $STAGING_PRIVATE_KEY | base64 -d
-    - echo $STAGING_PRIVATE_KEY | base64 -d > ~/.ssh/id_rsa
-    - cat ~/.ssh/id_rsa
+    # - echo $LIVE_PRIVATE_KEY | base64 -d
+    - echo $LIVE_PRIVATE_KEY | base64 -d > ~/.ssh/id_rsa
+    # - cat ~/.ssh/id_rsa
     - chmod 0600 ~/.ssh/id_rsa
     - ./ssh-add-pass.sh ~/.ssh/id_rsa
     - ssh-add -l
     - apt-get install rsync -qqy
   script:
-    - ssh -p22 $(echo $SSH_USER)@$(echo $STAGING_URL) "mkdir -p ~/vvp-web/tmp"
-    - rsync -rav -e ssh --exclude='.git/' --exclude='.gitlab-ci.yml' --delete-excluded ./ $(echo $SSH_USER)@$(echo $STAGING_URL):~/vvp-web/tmp
-    - ssh -p22 $(echo $SSH_USER)@$(echo $STAGING_URL) "docker-compose -f ~/vvp-web/tmp/docker-compose.yml up -d --build"
-  only:
-    - master
+    - ssh -p22 $(echo $LIVE_SSH_USER)@$(echo $LIVE_URL) "mkdir -p ~/vvp-web/tmp"
+    - rsync -rav -e ssh --exclude='.git/' --exclude='.gitlab-ci.yml' --delete-excluded ./ $(echo $LIVE_SSH_USER)@$(echo $LIVE_URL):~/vvp-web/tmp
+    - ssh -p22 $(echo $LIVE_SSH_USER)@$(echo $LIVE_URL) "sudo docker-compose --version"
+    - ssh -p22 $(echo $LIVE_SSH_USER)@$(echo $LIVE_URL) "sudo docker-compose -f ~/vvp-web/tmp/docker-compose.yml up -d --build"
