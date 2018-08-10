@@ -1,6 +1,7 @@
 # coding=utf-8
 import json, os, zipfile, asyncio, pytest, shutil, threading
 
+from utils import async_exec
 from utils.redis_layer import RedisRun
 
 base_dir = "tests/test"
@@ -52,49 +53,66 @@ class ProgressPlugin:
             self.rl.add_test(os.path.basename(report.fspath), report.longreprtext, report.outcome,
                              self.calc_dur(report))
 
-    def pytest_sessionfinish(self, session, exitstatus):
-        self.rl.set_status("Done!", 100, 'done')
+        # update outcome with every test so it can be displayed on the repo page..
         self.outcome['total'] = self.total
         self.rl.set_result(self.outcome)
+
+        if self.ran >= self.total:
+            self.rl.set_status("Done!", 100, 'success')
+
+    # stopped working, should probably be fixed sometime..
+    # def pytest_sessionfinish(self, session, exitstatus):
+    #    self.rl.set_status("Done!", 100, 'success')
+    #    self.outcome['total'] = self.total
+    #    self.rl.set_result(self.outcome)
 
 
 async def run_tests(uid, path):
     rl = RedisRun(uid)
-    rl.set_status("Unpacking zip file..", 5)
-    dir = os.path.abspath(base_dir+uid+'/')
-    await asyncio.sleep(2)
-    if not os.path.exists(dir):
-        os.makedirs(dir)
-    with zipfile.ZipFile(path, "r") as zip:
-        #zip.extractall(dir)
-        # TODO: the following method eliminates all subdirectories, this needs to be reviewed
-        for member in zip.namelist():
-            filename = os.path.basename(member)
-            # skip directories
-            if not filename:
-                continue
+    if rl.get_status()['progress'] > 20 or 'is_git' in rl.get():
+        return False
+    elif rl.get_status()['progress'] <= 20 and 'is_git' not in rl.get():
+        rl.set_status("Unpacking zip file..", 5)
+        dir = os.path.abspath(base_dir + uid + '/')
+        await asyncio.sleep(2)
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        with zipfile.ZipFile(path, "r") as zip:
+            # zip.extractall(dir)
+            # TODO: the following method eliminates all subdirectories, this needs to be reviewed
+            for member in zip.namelist():
+                filename = os.path.basename(member)
+                # skip directories
+                if not filename:
+                    continue
 
-            # copy file (taken from zipfile's extract)
-            source = zip.open(member)
-            target = open(os.path.join(dir, filename), "wb")
-            with source, target:
-                shutil.copyfileobj(source, target)
-        rl.set_status("Extracted " + str(len(zip.namelist())) + " file(s).", 10)
+                # copy file (taken from zipfile's extract)
+                source = zip.open(member)
+                target = open(os.path.join(dir, filename), "wb")
+                with source, target:
+                    shutil.copyfileobj(source, target)
+            rl.set_status("Extracted " + str(len(zip.namelist())) + " file(s).", 10)
+            rl.set_path(dir)
     await asyncio.sleep(1)
-    asyncio.gather(__do_run(rl, uid, dir))
+    asyncio.ensure_future(__do_run(uid))
 
 
-async def __do_run(rl, uid, dir):
-    rl.set_status("Running pytest..", 20)
+async def __do_run(uid):
+    rl = RedisRun(uid).set_status("Running pytest..", 20)
     abs_path = os.path.abspath("vvp-validation-scripts/ice_validator/")
-    print("Starting pytest on scripts in: " + abs_path)
+    # print("Starting pytest on scripts in: " + abs_path)
+    dir = rl.get_path()
     pp = ProgressPlugin(rl, uid)
     # example:
     # pytest vvp-validation-scripts/ice_validator/ --tap-stream --template-directory=/home/nacho/clearwater-onap --html=report.html --self-contained-html
-    thread = threading.Thread(target=pytest.main, kwargs={'args': [abs_path, '-p', 'no:terminal',
-                                                                   '--template-directory=' + dir + '/',
-                                                                   '--html=' + dir + '/report.html',
-                                                                   '--self-contained-html'],
-                                                          'plugins': [pp]})
+    print("Ensuring future of pytest.main..")
+    print("dir= " + dir)
+    asyncio.ensure_future(async_exec.thread_exec(target=pytest.main, kwargs={'args': [abs_path, '-p', 'no:terminal',
+                                                                                      '--template-directory=' + dir + '/',
+                                                                                      '--html=' + dir + '/report.html',
+                                                                                      '--self-contained-html'],
+                                                                             'plugins': [pp]}))
+    print("__do_run end")
     # run in another thread or it blocks our eventloop
-    thread.start()
+    # thread.start()
+    #print("Thread started. (" + repr(thread) + ')')
