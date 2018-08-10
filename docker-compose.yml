@@ -1,19 +1,25 @@
 version: '3'
 
 services:
+
+  python3-sanic:
+    image: python3-sanic
+    build: ./container/python3-sanic
+
   vvp-web:
     depends_on:
+      - python3-sanic
       - redis
       - git-http
+      - ssh-daemon
     build: .
+    environment:
+      - SSHD_USERNAME=root
+      - SSHD_PASSWORD=git_sshd
     restart: always
     networks:
-      public:
-        ipv4_address: 10.10.0.3
       internal:
-        ipv4_address: 10.11.0.4
-    ports:
-      - "8913:8913"
+        ipv4_address: 10.11.0.50
 
   nginx:
     build: ./container/nginx
@@ -22,7 +28,7 @@ services:
       public:
         ipv4_address: 10.10.0.10
       internal:
-        ipv4_address: 10.11.0.1
+        ipv4_address: 10.11.0.10
     ports:
       - "443:443"
       - "80:80"
@@ -32,8 +38,6 @@ services:
     networks:
       internal:
         ipv4_address: 10.11.0.20
-    environment:
-      - REDIS_HOST=10.11.0.20
     volumes:
       - ./redis:/data
 
@@ -42,7 +46,16 @@ services:
     restart: always
     networks:
       internal:
-        ipv4_address: 10.11.0.3
+        ipv4_address: 10.11.0.21
+    volumes:
+      - ./git:/git
+
+  ssh-daemon:
+    build: ./container/ssh-daemon
+    restart: always
+    networks:
+      internal:
+        ipv4_address: 10.11.0.22
     volumes:
       - ./git:/git
 
@@ -59,7 +72,8 @@ networks:
         - subnet: 10.10.0.0/24
   internal:
     # use bridge driver in subnet "10.11.0.0/24"
-    driver: bridge
+    driver: overlay
+    internal: true
     ipam:
       config:
         - subnet: 10.11.0.0/24

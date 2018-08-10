@@ -1,13 +1,7 @@
-FROM debian:jessie
+FROM nginx:1.15-alpine
 
-RUN apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62
-RUN echo "deb http://nginx.org/packages/mainline/debian/ jessie nginx" >> /etc/apt/sources.list
-
-ENV NGINX_VERSION 1.15.2-1~jessie
-
-RUN apt-get update && \
-    apt-get install -y ca-certificates nginx=${NGINX_VERSION} && \
-    rm -rf /var/lib/apt/lists/* && \
+RUN apk --update -qq add --no-cache openssl ca-certificates && \
+    rm -rf /var/cache/apk/* && \
     openssl genrsa -des3 -passout pass:x -out server.pass.key 2048 && \
     openssl rsa -passin pass:x -in server.pass.key -out server.key && \
     rm server.pass.key && \
