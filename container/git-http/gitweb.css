@@ -251,13 +251,13 @@ table.blame .light:hover {
 
 tr.dark,
 table.blame .dark:hover {
-    background-color: #f6f6f0;
+    background-color: rgba(0, 0, 0, .075);
 }
 
 /* currently both use the same, but it can change */
 tr.light:hover,
 tr.dark:hover {
-    background-color: #edece6;
+    background-color: rgba(0, 0, 0, .125);
 }
 
 /* boundary commits in 'blame' view */
