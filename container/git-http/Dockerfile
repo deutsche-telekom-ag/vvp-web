@@ -22,5 +22,8 @@ RUN sed -i 's/^\(user .*\)$/user root;/' /etc/nginx/nginx.conf
 #allow unauthenticated pushes
 RUN git config --system http.receivepack true
 
+# gitweb configuration
+RUN sed -i 's/\/var\/lib\/git/\/git/' /etc/gitweb.conf
+
 WORKDIR /var/www/html
 CMD spawn-fcgi -s /var/run/fcgiwrap.socket /usr/sbin/fcgiwrap && nginx -g "daemon off;"
