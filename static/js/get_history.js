@@ -9,6 +9,7 @@ class Run {
         this.commit = run_data.commit;
         this.running = (run_data.status === "running");
         this.node = this.create_html();
+        this.linked_repo = window.location.pathname.split('/')[2];
     }
 
     update_html() {
@@ -21,6 +22,7 @@ class Run {
     }
 
     create_html() {
+        let commit_ink = window.location.protocol + '/gitweb/?p=' + this.linked_repo + '.git;a=commit;h=' + this.commit;
         let html = "<tr id=\"" +
             this.uid + "\">\n" +
             "<td class=\"align-middle text-bold text-xxlarge\">" +
@@ -35,7 +37,7 @@ class Run {
             "</span>" +
             "</td>" +
             "<td class=\"align-middle\">" +
-            "<a>" + this.commit + "</a>" +
+            "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"" + commit_ink + "\">" + this.commit + "</a>" +
             "</td>" +
             "<td class=\"text-success align-middle text-semibold text-xxlarge\" id=\"" + this.uid + "_pass\">" +
             this.result.pass +
