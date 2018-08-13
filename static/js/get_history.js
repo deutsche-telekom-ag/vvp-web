@@ -22,7 +22,7 @@ class Run {
 
     create_html() {
         let html = "<tr id=\"" +
-            this.uid + "\">\n" +
+            this.uid + "\" onclick=\"window.open(window.location.protocol + '/result/' + '" + this.uid + "', '_blank');\">\n" +
             "<td class=\"align-middle text-bold text-xxlarge\">" +
             "#" + this.id + "</td>" +
             "<td class=\"align-middle text-smibold text-xlarge\">" +
