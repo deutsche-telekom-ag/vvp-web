@@ -49,6 +49,8 @@ class Run {
             this.result.fail +
             "</td>" +
             "</tr>";
+        //this probably shouldnt update here, but it works
+        repoChart_updateRun(this.id, this.result.pass, this.result.skip, this.result.fail);
         return $(html);
     }
 
@@ -127,6 +129,7 @@ class History {
         console.log(response);
         if (typeof this.runs[run] === 'undefined') {
             this.runs[run] = new Run(run, response.data);
+            repoChart_updateRun(run.id, run.result.pass, run.result.skip, run.result.fail);
             if (this.runs[run].running)
                 this.active_runs[run] = this.runs[run];
             this.update_html();
