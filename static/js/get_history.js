@@ -59,6 +59,9 @@ class Run {
         this.commit = run_data.commit;
         this.running = (run_data.status === "running");
         this.update_html();
+
+        //update chart
+        repoChart_updateRun(this.id, this.result.pass, this.result.skip, this.result.fail);
     }
 }
 

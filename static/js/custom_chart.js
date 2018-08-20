@@ -1,25 +1,36 @@
 var ctx = document.getElementById("repochart");
 ctx.height = 350;
+
+var repoChart_updateRun = function (number, passed, skipped, failed) {
+    let no = Number(number);
+    repoChart.data.labels[no] = "#" + no;
+    repoChart.data.datasets[0].data[no] = Number(failed);
+    repoChart.data.datasets[1].data[no] = Number(passed);
+    repoChart.data.datasets[2].data[no] = Number(skipped);
+    repoChart.update();
+};
+
 var repoChart = new Chart(ctx, {
     type: 'line',
     data: {
-        labels: ["#1", "#2", "#3", "#4", "#5", "#6"],
-        datasets: [{
-            fill: false,
-            label: 'Failed',
-            data: [45, 43, 47, 46, 42, 40],
-            //backgroundColor: [
-            //    'rgba(255, 99, 132, 0.2)',
-            //],
-            borderColor: [
-                'rgba(255,99,132,1)',
-            ],
-            borderWidth: 1.5
-        },
+        labels: [], //repoChart.data.labels
+        datasets: [
+            {
+                fill: false,
+                label: 'Failed',
+                data: [], //repoChart.data.datasets[0].data
+                //backgroundColor: [
+                //    'rgba(255, 99, 132, 0.2)',
+                //],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                ],
+                borderWidth: 1.5
+            },
             {
                 fill: false,
                 label: 'Passed',
-                data: [120, 128, 125, 40, 140, 145],
+                data: [], //repoChart.data.datasets[1].data
                 //backgroundColor: [
                 //    'rgba(98, 255, 130, 0.2)',
                 //],
@@ -31,7 +42,7 @@ var repoChart = new Chart(ctx, {
             {
                 fill: false,
                 label: 'Skipped',
-                data: [30, 31, 25, 35, 29, 37],
+                data: [], //repoChart.data.datasets[2].data
                 //backgroundColor: [
                 //    'rgba(255, 192, 56, 0.2)',
                 //],
