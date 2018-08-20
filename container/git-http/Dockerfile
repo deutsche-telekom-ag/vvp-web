@@ -22,5 +22,12 @@ RUN sed -i 's/^\(user .*\)$/user root;/' /etc/nginx/nginx.conf
 #allow unauthenticated pushes
 RUN git config --system http.receivepack true
 
+# gitweb configuration
+RUN sed -i 's/\/var\/lib\/git/\/git/' /etc/gitweb.conf
+ADD favicon.png /usr/share/gitweb/static/favicon.png
+ADD gitweb.css /usr/share/gitweb/static/gitweb.css
+RUN sed -i 's/git-favicon.png/favicon.png/' /etc/gitweb.conf
+RUN sed -i '/^#.*\$favicon/s/^#//' /etc/gitweb.conf
+
 WORKDIR /var/www/html
 CMD spawn-fcgi -s /var/run/fcgiwrap.socket /usr/sbin/fcgiwrap && nginx -g "daemon off;"

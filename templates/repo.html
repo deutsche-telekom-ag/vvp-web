@@ -4,39 +4,22 @@
 {% block head %}
     {{ super() }}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <style>
-        p {
-            padding-bottom: 0px;
-            padding-top: 0px;
-        }
-
-        p.text-xxlarge {
-            padding-bottom: 0px;
-            padding-top: 0px;
-        }
-
-        .enlarge {
-            transition: font-size 0.2s; /* Animation */
-        }
-
-        .enlarge:hover {
-            font-size: 60px;
-        }
-
-        .fa-refresh {
-            color: #e20074;
-        }
-    </style>
-    <script src="/static/js/Chart.bundle.min.js"></script>
+    <link rel="stylesheet" href="/static/css/repo.css">
     <script src="/static/js/clipboard.min.js"></script>
     <script src="/static/js/get_history.js"></script>
+    <script src="/static/js/Chart.bundle.min.js"></script>
     <script>
         $(function () {
             // initialize clipboard copy
             new ClipboardJS('.copy');
             // initialize tooltips
             $('[data-toggle="tooltip"]').tooltip();
-            // run get_runs() to initialize summary table
+            // set repo url
+            let getUrl = window.location;
+            let baseUrl = getUrl.protocol + "//" + getUrl.host + "/";
+            $("#git_url_text_field").val(baseUrl + "git/" + getUrl.pathname.split('/')[2]);
+            // run get_history() to initialize summary table
+            get_history();
             window.setInterval(function () {
                 get_history();
             }, 5000);
@@ -49,8 +32,8 @@
         <p class="lead">This is the overview for your repository.</p>
     </div>
     <div class="container">
-        <div class="card mb-4 box-shadow" style="display: block;">
-            <canvas id="repochart" width="100%" height="350"></canvas>
+        <div class="card mb-4 box-shadow">
+            Hier kommt ein Graph hin
         </div>
         <div class="input-group mb-3">
             <input type="text" class="form-control" placeholder="..."
