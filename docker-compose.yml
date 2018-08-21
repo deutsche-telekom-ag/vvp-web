@@ -39,7 +39,7 @@ services:
       internal:
         ipv4_address: 10.11.0.20
     volumes:
-      - ./redis:/data
+      - ./redis:/data:Z
 
   git-http:
     build: ./container/git-http
@@ -48,7 +48,7 @@ services:
       internal:
         ipv4_address: 10.11.0.21
     volumes:
-      - ./git:/git
+      - ./git:/git:Z
 
   ssh-daemon:
     build: ./container/ssh-daemon
@@ -57,7 +57,7 @@ services:
       internal:
         ipv4_address: 10.11.0.22
     volumes:
-      - ./git:/git
+      - ./git:/git:Z
 
 networks:
   public:
