@@ -37,9 +37,10 @@ deploy_live:
     - screen -d -m -S bukkit bash -c 'openvpn --config ~/gitlab-runner.ovpn'
     # mae sure openvpn is up and running and all interfaces are created
     - sleep 1m
-    # add routes and print setup
-    - export VPN_GATEWAY=$(ip addr show tun0 | awk '/inet / {gsub(/\/.*/,"",$2); print $4}' | cut -d "/" -f1)
-    - ip route add 10.8.0.0/24 via $(echo $VPN_GATEWAY) dev tun0
+    # add routes and print setup (routes are getting pushed by vpn server in the current setup)
+    #- export VPN_GATEWAY=$(ip addr show tun0 | awk '/inet / {gsub(/\/.*/,"",$2); print $4}' | cut -d "/" -f1)
+    #- export VPN_SUBNET=$(echo $LIVE_URL | tr "." " " | awk ' { print $1"."$2"."$3"."0"/"24 }')
+    #- ip route add 10.8.0.0/24 via $(echo $VPN_GATEWAY) dev tun0
     - ip r
     - ip addr
     # wait until $LIVE_URL is reachable
