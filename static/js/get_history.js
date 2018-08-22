@@ -22,11 +22,12 @@ class Run {
     }
 
     create_html() {
-        let commit_ink = window.location.protocol + '/gitweb/?p=' + this.linked_repo + '.git;a=commit;h=' + this.commit;
+        let commit_link = window.location.protocol + '/gitweb/?p=' + this.linked_repo + '.git;a=commit;h=' + this.commit;
+        let results_link = window.location.protocol + '/result/' + this.uid;
         let html = "<tr id=\"" +
-            this.uid + "\" onclick=\"window.open(window.location.protocol + '/result/' + '" + this.uid + "', '_blank');\">\n" +
+            this.uid + "\">\n" +
             "<td class=\"align-middle text-bold text-xxlarge\">" +
-            "#" + this.id + "</td>" +
+            "<a href=\"" + results_link + "\">#" + this.id + "</a></td>" +
             "<td class=\"align-middle text-smibold text-xlarge\">" +
             "<span class=\"js-secret-variables-save-loading-icon text-xlarge\" id=\"" + this.uid + "_running\"";
         if (!this.running)
@@ -37,7 +38,7 @@ class Run {
             "</span>" +
             "</td>" +
             "<td class=\"align-middle\">" +
-            "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"" + commit_ink + "\">" + this.commit + "</a>" +
+            "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"" + commit_link + "\">" + this.commit + "</a>" +
             "</td>" +
             "<td class=\"text-success align-middle text-semibold text-xxlarge\" id=\"" + this.uid + "_pass\">" +
             this.result.pass +
