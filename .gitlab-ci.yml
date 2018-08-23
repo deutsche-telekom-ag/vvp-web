@@ -25,8 +25,8 @@ deploy_live:
   variables:
     SSH_USER: gitlab
   stage: deploy
-  only:
-    - master
+#  only:
+#    - master
   image: ubuntu:18.04
   before_script:
     - apt-get update -qqy && apt-get install expect -qqy
