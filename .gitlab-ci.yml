@@ -71,8 +71,9 @@ deploy_live:
     - ssh-add -l
     - apt-get install rsync -qqy
   script:
-    - ssh -p22 $(echo $LIVE_SSH_USER)@$(echo $LIVE_URL) "mkdir -p ~/vvp-web/tmp"
-    - rsync -rav -e ssh --exclude='.git/' --exclude='.gitlab-ci.yml' --delete-excluded ./ $(echo $LIVE_SSH_USER)@$(echo $LIVE_URL):~/vvp-web/tmp
-    - ssh -p22 $(echo $LIVE_SSH_USER)@$(echo $LIVE_URL) "sudo mkdir ~/vvp-web/tmp/git"
+    - ssh -p22 $(echo $LIVE_SSH_USER)@$(echo $LIVE_URL) "sudo [ -d '/etc/vvp-web' ] && sudo docker-compose -f /etc/vvp-web/docker-compose.yml down || sudo mkdir -p /etc/vvp-web"
+    - rsync -rav -e ssh --rsync-path="sudo rsync" --exclude='.git/' --exclude='.gitlab-ci.yml' --delete ./ $(echo $LIVE_SSH_USER)@$(echo $LIVE_URL):/etc/vvp-web/ --exclude='redis/' --exclude='git/'
+    - ssh -p22 $(echo $LIVE_SSH_USER)@$(echo $LIVE_URL) "sudo [ ! -d '/etc/vvp-web/git' ] && sudo mkdir /etc/vvp-web/git || echo "Directory already exists!""
+    - ssh -p22 $(echo $LIVE_SSH_USER)@$(echo $LIVE_URL) "sudo [ ! -d '/etc/vvp-web/redis' ] && sudo mkdir /etc/vvp-web/redis || echo "Directory already exists!""
     - ssh -p22 $(echo $LIVE_SSH_USER)@$(echo $LIVE_URL) "sudo docker-compose --version"
-    - ssh -p22 $(echo $LIVE_SSH_USER)@$(echo $LIVE_URL) "sudo docker-compose -f ~/vvp-web/tmp/docker-compose.yml up -d --build"
+    - ssh -p22 $(echo $LIVE_SSH_USER)@$(echo $LIVE_URL) "sudo docker-compose -f /etc/vvp-web/docker-compose.yml up -d --build"
