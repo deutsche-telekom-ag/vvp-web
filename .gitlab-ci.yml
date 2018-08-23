@@ -3,23 +3,23 @@ variables:
   #CI_DEBUG_TRACE: "true"
 
 stages:
-  - build
+#  - build
   - deploy
 
 
-build_image:
-  image: docker:latest
-  stage: build
-  services:
-    - docker:dind
-  before_script:
-    - docker info
-    - apk update
-    - apk upgrade
-    - apk add python python-dev py-pip build-base
-    - pip install docker-compose
-  script:
-    - docker-compose build
+#build_image:
+#  image: docker:latest
+#  stage: build
+#  services:
+#    - docker:dind
+#  before_script:
+#    - docker info
+#    - apk update
+#    - apk upgrade
+#    - apk add python python-dev py-pip build-base
+#    - pip install docker-compose
+#  script:
+#    - docker-compose build
 
 deploy_live:
   variables:
