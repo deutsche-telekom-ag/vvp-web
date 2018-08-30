@@ -96,7 +96,7 @@ class History {
     }
 
     update_html() {
-        for (let run in this.active_runs) {
+        for (let run in this.runs) {
             if ($("#" + this.runs[run].uid).length)
                 $("#" + this.runs[run].uid).replaceWith(this.runs[run].update_html());
             else
@@ -130,7 +130,7 @@ class History {
         console.log(response);
         if (typeof this.runs[run] === 'undefined') {
             this.runs[run] = new Run(run, response.data);
-            repoChart_updateRun(run.id, run.result.pass, run.result.skip, run.result.fail);
+            repoChart_updateRun(this.runs[run].id, this.runs[run].result.pass, this.runs[run].result.skip, this.runs[run].result.fail);
             if (this.runs[run].running)
                 this.active_runs[run] = this.runs[run];
             this.update_html();
