@@ -96,7 +96,7 @@ class History {
     }
 
     update_html() {
-        for (let run in this.active_runs) {
+        for (let run in this.runs) {
             if ($("#" + this.runs[run].uid).length)
                 $("#" + this.runs[run].uid).replaceWith(this.runs[run].update_html());
             else
