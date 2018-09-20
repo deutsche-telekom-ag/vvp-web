@@ -2,6 +2,6 @@ redis
 sanic
 Jinja2
 PyYAML
-pytest
+pytest<=3.7.4
 pytest-html
 pexpect
