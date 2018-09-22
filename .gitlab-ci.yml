@@ -34,7 +34,7 @@ deploy_live:
     - echo $OVPN_CONFIG | base64 -d > ~/gitlab-runner.ovpn
 
     # run openvpn in background
-    - screen -d -m -S bukkit bash -c 'openvpn --config ~/gitlab-runner.ovpn'
+    - screen -d -m -S bukkit bash -c 'openvpn --float --config ~/gitlab-runner.ovpn'
     # mae sure openvpn is up and running and all interfaces are created
     - sleep 1m
     # add routes and print setup (routes are getting pushed by vpn server in the current setup)
