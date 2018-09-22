@@ -44,13 +44,13 @@ function doPoll() {
             console.log(response);
             if(response.status === 200)
             {
+                $("#message").text(response.data.message);
                 if (last_status !== response.data.progress) {
                     last_status = response.data.progress;
                     //if(response.data.progress < 50)
                     bar.animate(response.data.progress / 100);
                     //else
                     //    bar.set(response.data.progress / 100);
-                $("#message").text(response.data.message);
                 }
                 if (response.data.state !== "success")
                 {
