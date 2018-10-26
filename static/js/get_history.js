@@ -8,8 +8,8 @@ class Run {
         this.status = run_data.status;
         this.commit = run_data.commit;
         this.running = (run_data.status === "running");
-        this.node = this.create_html();
         this.linked_repo = window.location.pathname.split('/')[2];
+        this.node = this.create_html();
     }
 
     update_html() {
