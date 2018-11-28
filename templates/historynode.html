@@ -1,0 +1,27 @@
+<tr id="{{ node_uid }}">
+    <td class="align-middle text-bold text-xxlarge">
+        <a href="{{ results_link }}">#{{ node_id }}</a>
+    </td>
+    <td class="align-middle text-smibold text-xlarge">
+        {{#if node_running}}
+        <span class="js-secret-variables-save-loading-icon text-xlarge" id="{{ node_uid }}_running">
+        {{ else }}
+            <span class="js-secret-variables-save-loading-icon text-xlarge" id="{{ node_uid }}_running"
+                  style="display: none;">
+        {{/if}}
+                <i aria-hidden="true" data-hidden="true" class="fa fa-refresh fa-spin"></i>
+            </span>
+    </td>
+    <td class="align-middle">
+        <a target="_blank" rel="noopener noreferrer" href="{{ commit_link }}"> {{ node_commit }}</a>
+    </td>
+    <td class="text-success align-middle text-semibold text-xxlarge" id="{{ node_uid }}_pass">
+        {{ result_pass }}
+    </td>
+    <td class="text-warning align-middle text-semibold text-xxlarge" id=" {{ node_uid }}_skip">
+        {{ result_skip }}
+    </td>
+    <td class="text-danger align-middle text-semibold text-xxlarge" id=" {{ node_uid }}_fail">
+        {{ result_fail }}
+    </td>
+</tr>
