@@ -92,7 +92,7 @@ async def checkout_repo(run_uuid, git_uuid):
     id = str(uuid.uuid1().hex)
     asyncio.ensure_future(async_exec.subprocess_exec(args=['git', 'clone',
                                                            "http://" + GIT_HOSTNAME + "/git/" + git_uuid,
-                                                           base_dir + run_uuid], id=id))
+                                                           base_dir + run_uuid + ".git"], id=id))
     asyncio.ensure_future(run_after_checkout(id, run_uuid))
     RedisGit(git_uuid).add_run(run_uuid)
     return {'status': 'created', 'status_uuid': id, 'git_uuid': git_uuid, 'run_uuid': run_uuid}
@@ -118,10 +118,11 @@ async def run_after_checkout(id, run_uuid):
         return
     # checkout succeeded, start test run now
     print("Clone finished, getting latest commit hash..")
-    p = os.path.abspath(base_dir + run_uuid + '/')
+    p = os.path.abspath(base_dir + run_uuid + '.git/')
     try:
         d = await async_exec.subprocess_exec(args=["git", "--git-dir=" + p + "/.git", "rev-parse", "--short", "HEAD"],
                                              id="testing_git_commit")
+        print(d)
         assert type(d) is dict
         if d['status'] is 'success':
             RedisRun(run_uuid).set('commit_hash', d['stdout'])
