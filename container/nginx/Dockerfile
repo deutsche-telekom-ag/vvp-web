@@ -1,8 +1,10 @@
 FROM nginx:1.15-alpine
 
 RUN apk --update -qq add --no-cache openssl ca-certificates && \
-    rm -rf /var/cache/apk/* && \
-    openssl genrsa -des3 -passout pass:x -out server.pass.key 2048 && \
+    rm -rf /var/cache/apk/*
+# openssl version for debug information
+RUN openssl version -v
+RUN openssl genrsa -out server.pass.key 2048 && \
     openssl rsa -passin pass:x -in server.pass.key -out server.key && \
     rm server.pass.key && \
     openssl req -new -key server.key -out server.csr \
