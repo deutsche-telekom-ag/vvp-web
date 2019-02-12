@@ -24,32 +24,20 @@ class Run {
     create_html() {
         let commit_link = window.location.protocol + '/gitweb/?p=' + this.linked_repo + '.git;a=commit;h=' + this.commit;
         let results_link = window.location.protocol + '/result/' + this.uid;
-        let html = "<tr id=\"" +
-            this.uid + "\">\n" +
-            "<td class=\"align-middle text-bold text-xxlarge\">" +
-            "<a href=\"" + results_link + "\">#" + this.id + "</a></td>" +
-            "<td class=\"align-middle text-smibold text-xlarge\">" +
-            "<span class=\"js-secret-variables-save-loading-icon text-xlarge\" id=\"" + this.uid + "_running\"";
-        if (!this.running)
-            html = html + " style=\"display: none;\"";
-        html = html +
-            ">\n" +
-            "<i aria-hidden=\"true\" data-hidden=\"true\" class=\"fa fa-refresh fa-spin\"></i>\n" +
-            "</span>" +
-            "</td>" +
-            "<td class=\"align-middle\">" +
-            "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"" + commit_link + "\">" + this.commit + "</a>" +
-            "</td>" +
-            "<td class=\"text-success align-middle text-semibold text-xxlarge\" id=\"" + this.uid + "_pass\">" +
-            this.result.pass +
-            "</td>" +
-            "<td class=\"text-warning align-middle text-semibold text-xxlarge\" id=\"" + this.uid + "_skip\">" +
-            this.result.skip +
-            "</td>" +
-            "<td class=\"text-danger align-middle text-semibold text-xxlarge\" id=\"" + this.uid + "_fail\">" +
-            this.result.fail +
-            "</td>" +
-            "</tr>";
+        var theTemplateScript = $("#example-template").html();
+        var theTemplate = Handlebars.compile(theTemplateScript);
+        var context = {
+            node_uid: this.uid,
+            node_id: this.id,
+            node_running: this.running,
+            node_commit: this.commit,
+            results_link: results_link,
+            commit_link: commit_link,
+            result_pass: this.result.pass,
+            result_skip: this.result.skip,
+            result_fail: this.result.fail
+        };
+        var html = theTemplate(context);
         //this probably shouldnt update here, but it works
         repoChart_updateRun(this.id, this.result.pass, this.result.skip, this.result.fail);
         return $(html);
