@@ -13,7 +13,7 @@ function git_init() {
                         // get uid
                         let git_repo_uid = response.data.uid;
                         // concatenate the git repository url
-                        let git_repo_url = baseUrl + "git/" + git_repo_uid;
+                        let git_repo_url = baseUrl + "git/" + git_repo_uid + ".git";
                         let $git_url_field = $("#git_url_text_field");
                         // set initialized class for the url field
                         $git_url_field.addClass('initialized');
