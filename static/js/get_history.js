@@ -22,7 +22,7 @@ class Run {
     }
 
     create_html() {
-        let commit_link = window.location.protocol + '/gitweb/?p=' + this.linked_repo + '.git;a=commit;h=' + this.commit;
+        let commit_link = window.location.protocol + '/git/' + this.linked_repo + '.git/commit/' + this.commit;
         let results_link = window.location.protocol + '/result/' + this.uid;
         var theTemplateScript = $("#example-template").html();
         var theTemplate = Handlebars.compile(theTemplateScript);

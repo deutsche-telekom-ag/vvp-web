@@ -17,7 +17,7 @@
             // set repo url
             let getUrl = window.location;
             let baseUrl = getUrl.protocol + "//" + getUrl.host + "/";
-            $("#git_url_text_field").val(baseUrl + "git/" + getUrl.pathname.split('/')[2]);
+            $("#git_url_text_field").val(baseUrl + "git/" + getUrl.pathname.split('/')[2] + '.git');
             // run get_history() to initialize summary table
             get_history();
             window.setInterval(function () {

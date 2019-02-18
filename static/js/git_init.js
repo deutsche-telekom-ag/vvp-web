@@ -1,7 +1,7 @@
 function git_init() {
     // get base url
     let getUrl = window.location;
-    let baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
+    let baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1] + ".git";
     if (!$("#git_url_text_field").hasClass('initialized')) {
         $("#git_loading").show();
         axios.get('/git_init')
