@@ -30,7 +30,7 @@ build_image:
     - docker info
     - apk update
     - apk upgrade
-    - apk add python alpine-sdk libssl-dev libffi-dev python-dev py-pip build-base
+    - apk add python alpine-sdk openssl-dev libffi-dev python-dev py-pip build-base
     - pip install docker-compose
   script:
     - docker-compose build
