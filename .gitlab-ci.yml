@@ -28,7 +28,7 @@ build_image:
     - docker:dind
   before_script:
     - docker info
-    - apk upda
+    - apk update
     - apk upgrade
     - apk add python balpine-sdk libssl-dev libffi-dev python-dev py-pip build-base
     - pip install docker-compose
